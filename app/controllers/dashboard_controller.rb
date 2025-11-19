@@ -52,7 +52,31 @@ class DashboardController < ActionController::Base
   end
 
   def ensure_installation_onboarding
-    redirect_to '/installation/onboarding' if ::Redis::Alfred.get(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)
+    # Check if installation needs onboarding
+    # This happens when:
+    # 1. No SuperAdmin users exist in the database (fresh installation)
+    # 2. Redis flag is explicitly set (seed/migration scenario)
+    if needs_onboarding?
+      # Set the flag so OnboardingController can verify it
+      ::Redis::Alfred.set(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING, true) unless onboarding_flag_set?
+      redirect_to '/installation/onboarding'
+    end
+  end
+
+  def needs_onboarding?
+    # Onboarding is needed if there are no SuperAdmin users
+    # or if the Redis flag is explicitly set
+    !super_admin_exists? || onboarding_flag_set?
+  end
+
+  def super_admin_exists?
+    # Check if at least one SuperAdmin user exists
+    # Using exists? for performance (doesn't load records)
+    SuperAdmin.exists?
+  end
+
+  def onboarding_flag_set?
+    ::Redis::Alfred.get(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING).present?
   end
 
   def render_hc_if_custom_domain

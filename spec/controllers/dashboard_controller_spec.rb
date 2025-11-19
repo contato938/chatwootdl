@@ -1,5 +1,61 @@
 require 'rails_helper'
 
+describe 'DashboardController', type: :request do
+  describe 'onboarding flow' do
+    after do
+      # Clean up Redis key after each test
+      Redis::Alfred.delete(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)
+    end
+
+    context 'when accessing root path' do
+      context 'with no SuperAdmin users in database (fresh installation)' do
+        before do
+          # Ensure no SuperAdmin users exist
+          SuperAdmin.destroy_all
+        end
+
+        it 'redirects to onboarding page' do
+          get '/'
+          expect(response).to redirect_to('/installation/onboarding')
+        end
+
+        it 'sets the Redis onboarding flag' do
+          get '/'
+          expect(Redis::Alfred.get(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)).to be_present
+        end
+      end
+
+      context 'with SuperAdmin users existing (completed installation)' do
+        let!(:super_admin) { create(:super_admin) }
+
+        it 'does not redirect to onboarding page' do
+          get '/'
+          expect(response).to have_http_status(:success)
+          expect(response).not_to redirect_to('/installation/onboarding')
+        end
+
+        it 'does not set the Redis onboarding flag' do
+          get '/'
+          expect(Redis::Alfred.get(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)).to be_nil
+        end
+      end
+
+      context 'with Redis onboarding flag explicitly set' do
+        let!(:super_admin) { create(:super_admin) }
+
+        before do
+          Redis::Alfred.set(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING, true)
+        end
+
+        it 'redirects to onboarding page even with SuperAdmin present' do
+          get '/'
+          expect(response).to redirect_to('/installation/onboarding')
+        end
+      end
+    end
+  end
+end
+
 describe '/app/login', type: :request do
   context 'without DEFAULT_LOCALE' do
     it 'renders the dashboard' do
