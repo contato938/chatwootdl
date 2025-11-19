@@ -1,8 +1,18 @@
-class SalesPipelineKanbanSerializer < ActiveModel::Serializer
-  attributes :stages
+class SalesPipelineKanbanSerializer
+  def initialize(record)
+    @record = record
+  end
+
+  def as_json(*)
+    {
+      stages: stages
+    }
+  end
+
+  private
 
   def stages
-    object.map do |stage_data|
+    @record.map do |stage_data|
       {
         stage_id: stage_data[:stage_id],
         name: stage_data[:name],
