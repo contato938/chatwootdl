@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # Metrics endpoint for monitoring systems (Prometheus, Datadog, etc.)
+  # Must be publicly accessible without authentication
+  get '/metrics', to: 'metrics#show'
+
   # AUTH STARTS
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
     confirmations: 'devise_overrides/confirmations',
