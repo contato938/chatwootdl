@@ -1,8 +1,16 @@
 class CreateCaptainTables < ActiveRecord::Migration[7.0]
   def up
-    # Post this migration, the 'vector' extension is mandatory to run the application.
-    # If the extension is not installed, the migration will raise an error.
-    setup_vector_extension
+    # Attempt to enable the vector extension
+    # If it's not available, skip creating Captain tables and log a warning
+    begin
+      setup_vector_extension
+    rescue StandardError => e
+      Rails.logger.warn(
+        "Vector extension not available. Skipping Captain tables creation. #{e.class}: #{e.message}"
+      )
+      return
+    end
+
     create_assistants
     create_documents
     create_assistant_responses
@@ -10,10 +18,10 @@ class CreateCaptainTables < ActiveRecord::Migration[7.0]
   end
 
   def down
-    drop_table :captain_assistant_responses if table_exists?(:captain_assistant_responses)
-    drop_table :captain_documents if table_exists?(:captain_documents)
-    drop_table :captain_assistants if table_exists?(:captain_assistants)
-    drop_table :article_embeddings if table_exists?(:article_embeddings)
+    drop_table :captain_assistant_responses, if_exists: true
+    drop_table :captain_documents, if_exists: true
+    drop_table :captain_assistants, if_exists: true
+    drop_table :article_embeddings, if_exists: true
 
     # We are not disabling the extension here because it might be
     # used by other tables which are not part of this migration.
@@ -24,11 +32,7 @@ class CreateCaptainTables < ActiveRecord::Migration[7.0]
   def setup_vector_extension
     return if extension_enabled?('vector')
 
-    begin
-      enable_extension 'vector'
-    rescue ActiveRecord::StatementInvalid
-      raise StandardError, "Failed to enable 'vector' extension. Read more at https://chwt.app/v4/migration"
-    end
+    enable_extension 'vector'
   end
 
   def create_assistants
