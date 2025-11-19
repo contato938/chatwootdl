@@ -1,13 +1,5 @@
 class SalesPipeline::ConversationStageManager
-  include ActiveModel::Model
-  include ActiveModel::Attributes
-
-  attribute :conversation, :conversation
-  attribute :stage, :sales_pipeline_stage
-  attribute :account, :account
-
-  validates :conversation, presence: true
-  validates :account, presence: true
+  attr_reader :conversation, :stage, :account
 
   def initialize(conversation:, stage: nil, account: nil)
     @conversation = conversation
