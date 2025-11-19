@@ -68,11 +68,11 @@ module Integrations::Woocommerce
       when 200, 201
         JSON.parse(response.body)
       when 401, 403
-        raise Integrations::Woocommerce::AuthenticationError, 'Invalid credentials or insufficient permissions'
+        raise Integrations::Woocommerce::Exceptions::AuthenticationError, 'Invalid credentials or insufficient permissions'
       when 404
-        raise Integrations::Woocommerce::NotFoundError, 'API endpoint not found. Check if WooCommerce is installed and permalinks are enabled'
+        raise Integrations::Woocommerce::Exceptions::NotFoundError, 'API endpoint not found. Check if WooCommerce is installed and permalinks are enabled'
       else
-        raise Integrations::Woocommerce::ApiError, "API returned status #{response.code}: #{response.body}"
+        raise Integrations::Woocommerce::Exceptions::ApiError, "API returned status #{response.code}: #{response.body}"
       end
     end
 
@@ -94,9 +94,9 @@ module Integrations::Woocommerce
 
     def error_message(error)
       case error
-      when Integrations::Woocommerce::AuthenticationError
+      when Integrations::Woocommerce::Exceptions::AuthenticationError
         'Authentication failed. Please check your Consumer Key and Consumer Secret.'
-      when Integrations::Woocommerce::NotFoundError
+      when Integrations::Woocommerce::Exceptions::NotFoundError
         'WooCommerce API not found. Make sure WooCommerce is installed and "Pretty Permalinks" are enabled in WordPress.'
       when Net::OpenTimeout, Net::ReadTimeout
         'Connection timeout. Please check your store URL.'

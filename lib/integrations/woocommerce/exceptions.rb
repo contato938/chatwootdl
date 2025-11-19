@@ -1,4 +1,4 @@
-module Integrations::Woocommerce
+module Integrations::Woocommerce::Exceptions
   class Error < StandardError; end
   class ApiError < Error; end
   class AuthenticationError < Error; end
