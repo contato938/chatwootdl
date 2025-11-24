@@ -109,7 +109,7 @@ main() {
 
   # Run Doctor Diagnostic Script
   echo -e "${YELLOW}Running Chatwoot Doctor...${NC}"
-  bundle exec ruby bin/doctor || echo -e "${RED}Doctor script failed, but continuing...${NC}"
+  bundle exec ruby bin/doctor > public/doctor.html 2>&1 || echo "Doctor script failed" >> public/doctor.html
 
   # Start the application
   echo -e "${GREEN}Starting Puma web server...${NC}"
