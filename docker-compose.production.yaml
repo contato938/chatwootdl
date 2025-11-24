@@ -21,6 +21,10 @@ services:
     entrypoint: docker/entrypoints/rails.sh
     command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
     restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   sidekiq:
     <<: *base
@@ -33,6 +37,10 @@ services:
       - INSTALLATION_ENV=docker
     command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
     restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   postgres:
     image: pgvector/pgvector:pg16

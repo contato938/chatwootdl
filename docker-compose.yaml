@@ -42,6 +42,10 @@ services:
       - RAILS_ENV=development
     entrypoint: docker/entrypoints/rails.sh
     command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   sidekiq:
     <<: *base
@@ -60,6 +64,10 @@ services:
       - NODE_ENV=development
       - RAILS_ENV=development
     command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   vite:
     <<: *base
@@ -81,6 +89,10 @@ services:
       - RAILS_ENV=development
     entrypoint: docker/entrypoints/vite.sh
     command: bin/vite dev
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   postgres:
     image: pgvector/pgvector:pg16

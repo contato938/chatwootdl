@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# Increase file descriptor limits to prevent "too many open files" errors
+# This helps with applications that open many files (logs, DB connections, temp files, etc.)
+ulimit -n 65536 2>/dev/null || echo "Warning: Could not set ulimit -n 65536"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -8,6 +12,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}Starting Chatwoot...${NC}"
+echo -e "${YELLOW}File descriptor limit: $(ulimit -n)${NC}"
 
 # Function to wait for PostgreSQL to be ready
 wait_for_postgres() {

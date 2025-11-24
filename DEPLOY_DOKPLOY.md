@@ -81,11 +81,12 @@ ENABLE_ACCOUNT_SIGNUP=false
 
 O Dockerfile agora inclui um script de entrypoint (`docker-entrypoint.sh`) que automaticamente:
 
-1. ✅ Aguarda o PostgreSQL ficar disponível
-2. ✅ Aguarda o Redis ficar disponível
-3. ✅ Executa as migrations do banco de dados (`rails db:chatwoot_prepare`)
-4. ✅ Configura o IP lookup database
-5. ✅ Inicia o servidor Puma
+1. ✅ Aumenta os limites de file descriptors para 65536 (previne erro "too many open files")
+2. ✅ Aguarda o PostgreSQL ficar disponível
+3. ✅ Aguarda o Redis ficar disponível
+4. ✅ Executa as migrations do banco de dados (`rails db:chatwoot_prepare`)
+5. ✅ Configura o IP lookup database
+6. ✅ Inicia o servidor Puma
 
 ### Controle de Migrations
 
@@ -162,6 +163,11 @@ Deve retornar:
 
 4. **Porta incorreta**
    - O Dokploy geralmente define automaticamente, mas verifique se `PORT` está configurado
+
+5. **Erro: "tail: inotify cannot be used, reverting to polling: Too many open files"**
+   - ✅ **RESOLVIDO**: File descriptor limits aumentados automaticamente para 65536
+   - Se ainda enfrentar este erro, verifique se o Docker daemon do seu host tem limites apropriados
+   - Consulte [TROUBLESHOOTING_502.md](TROUBLESHOOTING_502.md) para detalhes sobre configuração do host
 
 ## 🔐 Segurança
 
