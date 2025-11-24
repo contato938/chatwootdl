@@ -10,8 +10,9 @@ class ManuallyManagedFeaturesField < Administrate::Field::Base
   end
 
   def all_features
-    # Business and Enterprise plan features only
-    Enterprise::Billing::HandleStripeEventService::BUSINESS_PLAN_FEATURES +
+    # Startup, Business and Enterprise plan features only
+    Enterprise::Billing::HandleStripeEventService::STARTUP_PLAN_FEATURES +
+      Enterprise::Billing::HandleStripeEventService::BUSINESS_PLAN_FEATURES +
       Enterprise::Billing::HandleStripeEventService::ENTERPRISE_PLAN_FEATURES
   end
 

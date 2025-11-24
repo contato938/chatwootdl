@@ -30,7 +30,12 @@ class SuperAdmin::ApplicationController < Administrate::ApplicationController
   private
 
   def set_installation_name
-    @installation_name = GlobalConfig.load('INSTALLATION_NAME', 'Admin')
+    begin
+      @installation_name = GlobalConfig.load('INSTALLATION_NAME', 'Admin')
+    rescue => e
+      Rails.logger.error "Error setting installation name: #{e.message}"
+      @installation_name = 'Admin'
+    end
   end
 
   def installation_name

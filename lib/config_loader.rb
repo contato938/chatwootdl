@@ -28,13 +28,24 @@ class ConfigLoader
 
   def general_configs
     @config_path ||= Rails.root.join('config')
-    @general_configs ||= YAML.safe_load(File.read("#{@config_path}/installation_config.yml")).freeze
+    begin
+      @general_configs ||= YAML.safe_load(File.read("#{@config_path}/installation_config.yml")).freeze
+    rescue => e
+      Rails.logger.error "Error loading general configs: #{e.message}"
+      @general_configs ||= [].freeze
+    end
   end
 
   private
 
   def account_features
-    @account_features ||= YAML.safe_load(File.read("#{@config_path}/features.yml")).freeze
+    @config_path ||= Rails.root.join('config')
+    begin
+      @account_features ||= YAML.safe_load(File.read("#{@config_path}/features.yml")).freeze
+    rescue => e
+      Rails.logger.error "Error loading account features: #{e.message}"
+      @account_features ||= [].freeze
+    end
   end
 
   def reconcile_general_config
