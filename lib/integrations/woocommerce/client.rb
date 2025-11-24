@@ -2,8 +2,9 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-module Integrations::Woocommerce
-  class Client
+module Integrations
+  module Woocommerce
+    class Client
     def initialize(hook)
       @hook = hook
       @settings = hook.settings.with_indifferent_access
@@ -103,6 +104,7 @@ module Integrations::Woocommerce
       else
         "Connection failed: #{error.message}"
       end
+    end
     end
   end
 end

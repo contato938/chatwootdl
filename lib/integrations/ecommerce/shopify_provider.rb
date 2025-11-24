@@ -1,6 +1,7 @@
-module Integrations::Ecommerce
-  class ShopifyProvider < BaseProvider
-    def list_products(page: 1, per_page: 20, search: nil)
+module Integrations
+  module Ecommerce
+    class ShopifyProvider < BaseProvider
+      def list_products(page: 1, per_page: 20, search: nil)
       setup_shopify_context
       client = shopify_client
 
@@ -77,6 +78,7 @@ module Integrations::Ecommerce
 
     def shopify_client
       @shopify_client ||= ShopifyAPI::Clients::Rest::Admin.new(session: shopify_session)
+    end
     end
   end
 end

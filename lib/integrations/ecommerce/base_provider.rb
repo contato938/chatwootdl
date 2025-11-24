@@ -1,6 +1,7 @@
-module Integrations::Ecommerce
-  class BaseProvider
-    def initialize(hook)
+module Integrations
+  module Ecommerce
+    class BaseProvider
+      def initialize(hook)
       @hook = hook
     end
 
@@ -49,6 +50,7 @@ module Integrations::Ecommerce
       return 'unknown' if status.blank?
 
       status == 'instock' || status == 'in_stock' ? 'in_stock' : 'out_of_stock'
+    end
     end
   end
 end
