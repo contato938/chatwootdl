@@ -5,7 +5,7 @@ RSpec.describe 'Super Admin Login Branding', type: :feature do
 
   context 'when installation name is configured' do
     before do
-      allow(GlobalConfig).to receive(:load).with('INSTALLATION_NAME', 'Admin').and_return('My Company')
+      allow(GlobalConfigService).to receive(:load).with('INSTALLATION_NAME', 'Admin').and_return('My Company')
     end
 
     it 'displays the installation name in the page title' do
@@ -30,7 +30,7 @@ RSpec.describe 'Super Admin Login Branding', type: :feature do
 
   context 'when installation name is not configured' do
     before do
-      allow(GlobalConfig).to receive(:load).with('INSTALLATION_NAME', 'Admin').and_return('Admin')
+      allow(GlobalConfigService).to receive(:load).with('INSTALLATION_NAME', 'Admin').and_return('Admin')
     end
 
     it 'falls back to "Admin" in the page title' do
