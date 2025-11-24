@@ -107,6 +107,10 @@ main() {
   # Setup IP lookup
   setup_ip_lookup
 
+  # Run Doctor Diagnostic Script
+  echo -e "${YELLOW}Running Chatwoot Doctor...${NC}"
+  bundle exec ruby bin/doctor || echo -e "${RED}Doctor script failed, but continuing...${NC}"
+
   # Start the application
   echo -e "${GREEN}Starting Puma web server...${NC}"
   echo -e "${GREEN}Environment: $RAILS_ENV${NC}"
