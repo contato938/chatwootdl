@@ -107,13 +107,14 @@ main() {
   # Setup IP lookup
   setup_ip_lookup
 
-  # Run Doctor Diagnostic Script
-  echo -e "${YELLOW}Running Chatwoot Doctor...${NC}"
-  bundle exec ruby bin/doctor > public/doctor.html 2>&1 || echo "Doctor script failed" >> public/doctor.html
+  # EMERGENCY MODE: Robust Setup
+  # 1. Run Doctor in background
+  echo -e "${YELLOW}Starting Doctor in background...${NC}"
+  (bundle exec ruby bin/doctor > public/doctor.html 2>&1 || echo "Doctor script failed" >> public/doctor.html) &
 
-  # EMERGENCY MODE: Start simple Node server
+  # 2. Start Node server in FOREGROUND
   echo -e "${GREEN}Starting Emergency Node Server...${NC}"
-  node -e "const http = require('http'); const fs = require('fs'); const port = process.env.PORT || 3000; http.createServer((req, res) => { res.writeHead(200, {'Content-Type': 'text/html'}); try { res.end(fs.readFileSync('public/doctor.html')); } catch (e) { res.end('Error: ' + e.message); } }).listen(port, '0.0.0.0', () => console.log('Emergency server listening'));"
+  node -e "const http = require('http'); const fs = require('fs'); const port = process.env.PORT || 3000; http.createServer((req, res) => { res.writeHead(200, {'Content-Type': 'text/html'}); try { if (fs.existsSync('public/doctor.html')) { res.end(fs.readFileSync('public/doctor.html')); } else { res.end('<html><head><meta http-equiv=\"refresh\" content=\"5\"></head><body><h1>Doctor is running...</h1><p>Page will refresh in 5 seconds.</p></body></html>'); } } catch (e) { res.end('Error: ' + e.message); } }).listen(port, '0.0.0.0', () => console.log('Emergency server listening'));"
 
   # Disable original execution
   # if [ $# -eq 0 ]; then
