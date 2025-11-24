@@ -1,5 +1,7 @@
-module Integrations::Slack::SlackMessageHelper
-  def process_message_payload
+module Integrations
+  module Slack
+    module SlackMessageHelper
+      def process_message_payload
     return unless conversation
 
     handle_conversation
@@ -88,5 +90,7 @@ module Integrations::Slack::SlackMessageHelper
 
   def private_note?
     params[:event][:text].strip.downcase.starts_with?('note:', 'private:')
+  end
+    end
   end
 end
