@@ -34,5 +34,9 @@ do
   sleep 2;
 done
 
+# Run Doctor Diagnostic Script
+echo "Running Chatwoot Doctor..."
+bundle exec ruby bin/doctor || echo "Doctor script failed, but continuing..."
+
 # Execute the main process of the container
 exec "$@"
