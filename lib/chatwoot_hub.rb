@@ -65,6 +65,7 @@ class ChatwootHub
   end
 
   def self.sync_with_hub
+    parsed_response = {}
     begin
       info = instance_config
       info = info.merge(instance_metrics) unless ENV['DISABLE_TELEMETRY']
