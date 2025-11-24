@@ -81,6 +81,42 @@ docker logs nome-do-container
 4. **"Missing `secret_key_base` for 'production' environment"**
    - SECRET_KEY_BASE não está configurado
 
+5. **"tail: inotify cannot be used, reverting to polling: Too many open files"**
+   - ✅ **RESOLVIDO**: File descriptor limits aumentados para 65536
+   - A aplicação estava atingindo o limite de arquivos abertos simultaneamente
+   - Correções aplicadas:
+     - `docker-entrypoint.sh`: Aumentado ulimit -n para 65536
+     - `docker-compose.yaml`: Adicionado ulimits.nofile para todos os serviços
+     - `docker-compose.production.yaml`: Adicionado ulimits.nofile para rails e sidekiq
+   
+   **Se você ainda enfrentar este erro em produção:**
+   
+   Para Docker standalone:
+   ```bash
+   docker run --ulimit nofile=65536:65536 your-image
+   ```
+   
+   Para ajustar no host Docker (requer root):
+   ```bash
+   # Edite /etc/security/limits.conf e adicione:
+   * soft nofile 65536
+   * hard nofile 65536
+   
+   # Ou ajuste o Docker daemon em /etc/docker/daemon.json:
+   {
+     "default-ulimits": {
+       "nofile": {
+         "Name": "nofile",
+         "Hard": 65536,
+         "Soft": 65536
+       }
+     }
+   }
+   
+   # Reinicie o Docker daemon:
+   sudo systemctl restart docker
+   ```
+
 ## 🚀 Próximos Passos
 
 1. **Rebuild da aplicação**: Faça um novo deploy após esta correção
