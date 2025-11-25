@@ -1,0 +1,99 @@
+{
+  "WOOCOMMERCE": {
+    "TITLE": "Integração WooCommerce",
+    "SUBTITLE": "Conecte sua loja WooCommerce para visualizar produtos nas conversas",
+    "SETUP": {
+      "TITLE": "Configurar WooCommerce",
+      "STEP_1": {
+        "TITLE": "Informações da Loja",
+        "DESCRIPTION": "Digite os detalhes básicos da sua loja WooCommerce"
+      },
+      "STEP_2": {
+        "TITLE": "Credenciais API",
+        "DESCRIPTION": "Configure as chaves de API para conectar com sua loja"
+      },
+      "STEP_3": {
+        "TITLE": "Testar Conexão",
+        "DESCRIPTION": "Verifique se a integração está funcionando corretamente"
+      }
+    },
+    "FORM": {
+      "STORE_NAME": {
+        "LABEL": "Nome da Loja",
+        "PLACEHOLDER": "Minha Loja",
+        "HELP": "Nome amigável para identificar sua loja"
+      },
+      "STORE_URL": {
+        "LABEL": "URL da Loja",
+        "PLACEHOLDER": "https://minhaloja.com.br",
+        "HELP": "URL completa da sua loja WooCommerce (incluindo https://)"
+      },
+      "CONSUMER_KEY": {
+        "LABEL": "Chave de Consumidor (Consumer Key)",
+        "PLACEHOLDER": "ck_xxxxxxxxxxxxxxxx",
+        "HELP": "Obtida em: WooCommerce → Configurações → Avançado → REST API"
+      },
+      "CONSUMER_SECRET": {
+        "LABEL": "Senha Secreta (Consumer Secret)",
+        "PLACEHOLDER": "cs_xxxxxxxxxxxxxxxx",
+        "HELP": "Obtida junto com a Consumer Key nas configurações da API REST"
+      },
+      "API_VERSION": {
+        "LABEL": "Versão da API",
+        "HELP": "Versão da API REST do WooCommerce (padrão: wc/v3)"
+      }
+    },
+    "ACTIONS": {
+      "TEST_CONNECTION": "Testar Conexão",
+      "TESTING": "Testando...",
+      "SAVE": "Salvar Configurações",
+      "SAVING": "Salvando...",
+      "DISCONNECT": "Desconectar",
+      "VIEW_DOCS": "Ver Documentação"
+    },
+    "STATUS": {
+      "CONNECTED": "Conectado",
+      "NOT_CONFIGURED": "Não Configurado",
+      "ERROR": "Erro na Conexão"
+    },
+    "MESSAGES": {
+      "TEST_SUCCESS": "✓ Conexão testada com sucesso!",
+      "TEST_ERROR": "✗ Erro ao testar conexão. Verifique suas credenciais.",
+      "SAVE_SUCCESS": "Configurações salvas com sucesso!",
+      "SAVE_ERROR": "Erro ao salvar configurações. Tente novamente.",
+      "AUTH_ERROR": "Credenciais inválidas. Verifique sua Consumer Key e Secret.",
+      "DISCONNECT_CONFIRM": "Tem certeza que deseja desconectar? Os produtos não estarão mais visíveis nas conversas."
+    },
+    "HELP": {
+      "TITLE": "Como obter as credenciais API?",
+      "STEPS": [
+        "1. Acesse o painel administrativo do WordPress/WooCommerce",
+        "2. Vá em WooCommerce → Configurações → Avançado → REST API",
+        "3. Clique em 'Adicionar chave'",
+        "4. Preencha: Descrição (ex: Chatwoot), Usuário, Permissões: Leitura",
+        "5. Copie a Consumer Key e Consumer Secret geradas",
+        "6. Cole aqui nas configurações"
+      ],
+      "DOCS_LINK": "https://woocommerce.github.io/woocommerce-rest-api-docs/"
+    },
+    "PRODUCTS_SIDEBAR": {
+      "TITLE": "Produtos E-commerce",
+      "SEARCH_PLACEHOLDER": "Buscar produtos...",
+      "FILTERS": {
+        "ALL": "Todos",
+        "IN_STOCK": "Em Estoque",
+        "OUT_OF_STOCK": "Fora de Estoque",
+        "ON_SALE": "Em Promoção"
+      },
+      "NO_PRODUCTS": "Nenhum produto encontrado",
+      "LOADING": "Carregando produtos...",
+      "SEND_LINK": "Enviar link para o cliente",
+      "VIEW_DETAILS": "Ver detalhes",
+      "STOCK_STATUS": {
+        "IN_STOCK": "Em estoque",
+        "OUT_OF_STOCK": "Fora de estoque",
+        "ON_BACKORDER": "Sob encomenda"
+      }
+    }
+  }
+}

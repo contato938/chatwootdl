@@ -369,6 +369,13 @@ const menuItems = computed(() => {
       ],
     },
     {
+      name: 'Sales Pipeline',
+      label: t('SIDEBAR.SALES_PIPELINE'),
+      icon: 'i-lucide-kanban-square',
+      to: accountScopedRoute('sales_pipeline_index'),
+      activeOn: ['sales_pipeline_index'],
+    },
+    {
       name: 'Reports',
       label: t('SIDEBAR.REPORTS'),
       icon: 'i-lucide-chart-spline',
@@ -564,6 +571,12 @@ const menuItems = computed(() => {
           label: t('SIDEBAR.SLA'),
           icon: 'i-lucide-clock-alert',
           to: accountScopedRoute('sla_list'),
+        },
+        {
+          name: 'Settings Sales Pipeline',
+          label: t('SIDEBAR.SALES_PIPELINE_SETTINGS'),
+          icon: 'i-lucide-workflow',
+          to: accountScopedRoute('sales_pipeline_settings'),
         },
         {
           name: 'Settings Security',

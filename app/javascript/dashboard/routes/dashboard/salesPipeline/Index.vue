@@ -1,17 +1,35 @@
 <template>
   <div class="flex flex-col h-full">
     <!-- Header -->
-    <div class="border-b border-slate-200 dark:border-slate-700 px-4 py-3">
+    <div class="border-b border-slate-200 dark:border-slate-700 px-4 py-4">
+      <!-- Breadcrumb -->
+      <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-2">
+        <router-link :to="`/app/accounts/${currentAccountId}/dashboard`" class="hover:text-slate-700 dark:hover:text-slate-300">
+          Dashboard
+        </router-link>
+        <span class="mx-2">/</span>
+        <span class="text-slate-900 dark:text-slate-50 font-medium">{{ $t('SALES_PIPELINE.TITLE') }}</span>
+      </div>
+      
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-medium text-slate-900 dark:text-slate-50">
-          {{ $t('SALES_PIPELINE.TITLE') }}
-        </h2>
+        <div class="flex items-center gap-3">
+          <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-50">
+            {{ $t('SALES_PIPELINE.TITLE') }}
+          </h2>
+          <router-link
+            :to="settingsRoute"
+            class="inline-flex items-center px-2 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <fluent-icon icon="settings" size="14" class="mr-1" />
+            {{ $t('SALES_PIPELINE.CONFIGURE') }}
+          </router-link>
+        </div>
         
         <!-- Filters -->
         <div class="flex items-center space-x-3">
           <div class="flex items-center space-x-2">
             <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-              {{ $t('SALES_PIPELINE.FILTERS.INBOX') }}:
+              {{ $t('SALES_PIPELINE.FILTER_BY_CHANNEL') }}
             </label>
             <select
               v-model="filters.inbox_id"
@@ -19,7 +37,7 @@
               @change="loadKanbanData"
             >
               <option value="">
-                {{ $t('SALES_PIPELINE.FILTERS.ALL_INBOXES') }}
+                {{ $t('SALES_PIPELINE.ALL_CHANNELS') }}
               </option>
               <option
                 v-for="inbox in inboxes"
@@ -33,7 +51,7 @@
 
           <div class="flex items-center space-x-2">
             <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-              {{ $t('SALES_PIPELINE.FILTERS.ASSIGNEE') }}:
+              {{ $t('SALES_PIPELINE.FILTER_BY_AGENT') }}
             </label>
             <select
               v-model="filters.assignee_id"
@@ -54,11 +72,12 @@
           </div>
 
           <button
-            class="btn btn--primary"
+            class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
             @click="loadKanbanData"
             :disabled="uiFlags.isFetching"
           >
-            <spinner v-if="uiFlags.isFetching" size="small" />
+            <fluent-icon v-if="!uiFlags.isFetching" icon="arrow-sync" size="14" class="mr-1" />
+            <spinner v-else size="small" />
             {{ $t('SALES_PIPELINE.REFRESH') }}
           </button>
         </div>
@@ -73,18 +92,22 @@
 
       <div
         v-else-if="stages.length === 0"
-        class="flex flex-col items-center justify-center h-64 text-slate-500 dark:text-slate-400"
+        class="flex flex-col items-center justify-center h-64 text-center px-4"
       >
-        <div class="text-lg font-medium mb-2">
+        <div class="mb-4">
+          <fluent-icon icon="board" size="48" class="text-slate-300 dark:text-slate-600" />
+        </div>
+        <div class="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-2">
           {{ $t('SALES_PIPELINE.NO_STAGES_CONFIGURED') }}
         </div>
-        <div class="text-sm">
+        <div class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md">
           {{ $t('SALES_PIPELINE.CONFIGURE_STAGES_FIRST') }}
         </div>
         <router-link
           :to="settingsRoute"
-          class="btn btn--primary mt-4"
+          class="inline-flex items-center px-4 py-2 bg-woot-500 hover:bg-woot-600 text-white rounded-lg font-medium transition-colors"
         >
+          <fluent-icon icon="settings" size="16" class="mr-2" />
           {{ $t('SALES_PIPELINE.CONFIGURE_PIPELINE') }}
         </router-link>
       </div>
@@ -100,25 +123,35 @@
             class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 rounded-t-lg"
             :style="{ backgroundColor: stage.color + '20', borderColor: stage.color }"
           >
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-1">
               <h3 class="font-medium text-slate-900 dark:text-slate-50">
                 {{ stage.name }}
               </h3>
               <span
-                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-                :style="{ backgroundColor: stage.color + '20', color: stage.color }"
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
               >
                 {{ stage.cards_count }}
               </span>
             </div>
-            <div v-if="stage.is_default" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              {{ $t('SALES_PIPELINE.DEFAULT_STAGE') }}
-            </div>
-            <div v-else-if="stage.is_closed_won" class="text-xs text-green-600 dark:text-green-400 mt-1">
-              {{ $t('SALES_PIPELINE.CLOSED_WON') }}
-            </div>
-            <div v-else-if="stage.is_closed_lost" class="text-xs text-red-600 dark:text-red-400 mt-1">
-              {{ $t('SALES_PIPELINE.CLOSED_LOST') }}
+            <div v-if="stage.is_default || stage.is_closed_won || stage.is_closed_lost" class="flex gap-1 mt-1">
+              <span
+                v-if="stage.is_default"
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
+              >
+                {{ $t('SALES_PIPELINE.BADGES.DEFAULT') }}
+              </span>
+              <span
+                v-if="stage.is_closed_won"
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
+              >
+                ✓ {{ $t('SALES_PIPELINE.BADGES.WON') }}
+              </span>
+              <span
+                v-if="stage.is_closed_lost"
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300"
+              >
+                ✗ {{ $t('SALES_PIPELINE.BADGES.LOST') }}
+              </span>
             </div>
           </div>
 
@@ -289,6 +322,7 @@ export default {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

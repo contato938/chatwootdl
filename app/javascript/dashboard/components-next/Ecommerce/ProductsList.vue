@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { useAlert } from 'dashboard/composables';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import ProductItem from './ProductItem.vue';
@@ -17,6 +17,13 @@ const loading = ref(true);
 const error = ref('');
 const searchQuery = ref('');
 const searchTimeout = ref(null);
+const selectedFilter = ref('ALL');
+
+const stockFilters = [
+  { value: 'ALL', label: 'ALL' },
+  { value: 'IN_STOCK', label: 'IN_STOCK' },
+  { value: 'OUT_OF_STOCK', label: 'OUT_OF_STOCK' },
+];
 
 const fetchProducts = async () => {
   try {
@@ -35,6 +42,19 @@ const fetchProducts = async () => {
     loading.value = false;
   }
 };
+
+const filteredProducts = computed(() => {
+  if (selectedFilter.value === 'ALL') {
+    return products.value;
+  }
+  if (selectedFilter.value === 'IN_STOCK') {
+    return products.value.filter(p => p.stock_status === 'in_stock');
+  }
+  if (selectedFilter.value === 'OUT_OF_STOCK') {
+    return products.value.filter(p => p.stock_status !== 'in_stock');
+  }
+  return products.value;
+});
 
 const handleSearch = () => {
   clearTimeout(searchTimeout.value);
@@ -74,6 +94,23 @@ onMounted(() => {
           class="w-full pl-10 pr-4 py-2 text-sm border border-n-weak rounded-md focus:outline-none focus:ring-2 focus:ring-n-brand focus:border-transparent bg-n-solid-1"
         />
       </div>
+      
+      <!-- Filter Buttons -->
+      <div class="flex gap-2 mt-3">
+        <button
+          v-for="filter in stockFilters"
+          :key="filter.value"
+          @click="selectedFilter = filter.value"
+          :class="[
+            'px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
+            selectedFilter === filter.value
+              ? 'bg-n-brand text-white'
+              : 'bg-n-solid-2 text-n-slate-11 hover:bg-n-solid-3'
+          ]"
+        >
+          {{ $t(`WOOCOMMERCE.PRODUCTS_SIDEBAR.FILTERS.${filter.label}`) }}
+        </button>
+      </div>
     </div>
 
     <div class="flex-1 overflow-y-auto p-4">
@@ -94,7 +131,7 @@ onMounted(() => {
         <p class="text-sm">{{ $t('ECOMMERCE.PRODUCTS.ERROR') }}</p>
       </div>
       <div
-        v-else-if="!products.length"
+        v-else-if="!filteredProducts.length"
         class="text-center text-n-slate-11 p-8"
       >
         <i class="i-ph-package text-4xl mb-3 text-n-slate-9" />
@@ -102,7 +139,7 @@ onMounted(() => {
       </div>
       <div v-else class="flex flex-col gap-3">
         <ProductItem
-          v-for="product in products"
+          v-for="product in filteredProducts"
           :key="product.id"
           :product="product"
           :conversation-id="conversationId"

@@ -308,6 +308,8 @@
     "ACTIVE": "Active",
     "COMPANIES": "Companies",
     "ALL_COMPANIES": "All Companies",
+    "SALES_PIPELINE": "Sales Pipeline",
+    "SALES_PIPELINE_SETTINGS": "Sales Pipeline",
     "CAPTAIN": "Captain",
     "CAPTAIN_ASSISTANTS": "Assistants",
     "CAPTAIN_DOCUMENTS": "Documents",

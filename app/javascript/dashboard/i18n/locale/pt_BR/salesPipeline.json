@@ -1,0 +1,26 @@
+{
+  "SALES_PIPELINE": {
+    "TITLE": "Pipeline de Vendas",
+    "SUBTITLE": "Gerencie suas oportunidades de vendas",
+    "CONFIGURE": "Configurar",
+    "FILTER_BY_CHANNEL": "Canal",
+    "FILTER_BY_AGENT": "Agente",
+    "ALL_CHANNELS": "Todos os canais",
+    "ALL_AGENTS": "Todos os agentes",
+    "REFRESH": "Atualizar",
+    "NO_STAGES_CONFIGURED": "Nenhum estágio configurado",
+    "CONFIGURE_STAGES_FIRST": "Configure os estágios do pipeline para começar",
+    "CONFIGURE_PIPELINE": "Configurar Pipeline",
+    "BADGES": {
+      "DEFAULT": "Padrão",
+      "WON": "Ganho",
+      "LOST": "Perdido"
+    },
+    "NO_CARDS_IN_STAGE": "Nenhuma conversa neste estágio",
+    "NO_MESSAGES": "Sem mensagens ainda",
+    "ERROR": {
+      "LOAD_FAILED": "Falha ao carregar dados do pipeline",
+      "KANBAN_LOAD_FAILED": "Falha ao carregar dados do Kanban"
+    }
+  }
+}
