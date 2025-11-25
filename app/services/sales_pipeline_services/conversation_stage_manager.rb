@@ -1,11 +1,8 @@
 module SalesPipelineServices
   class ConversationStageManager
     include ActiveModel::Model
-    include ActiveModel::Attributes
 
-    attribute :conversation, :conversation
-    attribute :stage, :sales_pipeline_stage
-    attribute :account, :account
+    attr_accessor :conversation, :stage, :account
 
     validates :conversation, presence: true
     validates :account, presence: true
