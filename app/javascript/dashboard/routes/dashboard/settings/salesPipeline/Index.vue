@@ -107,23 +107,23 @@
                           v-if="stage.is_default"
                           class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                         >
-                          {{ $t('SALES_PIPELINE_SETTINGS.DEFAULT_STAGE') }}
+                          {{ $t('SALES_PIPELINE_SETTINGS.BADGES.DEFAULT') }}
                         </span>
                         <span
                           v-if="stage.is_closed_won"
                           class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                         >
-                          {{ $t('SALES_PIPELINE_SETTINGS.CLOSED_WON') }}
+                          ✓ {{ $t('SALES_PIPELINE_SETTINGS.BADGES.WON') }}
                         </span>
                         <span
                           v-if="stage.is_closed_lost"
                           class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                         >
-                          {{ $t('SALES_PIPELINE_SETTINGS.CLOSED_LOST') }}
+                          ✗ {{ $t('SALES_PIPELINE_SETTINGS.BADGES.LOST') }}
                         </span>
                       </div>
                       <div class="text-sm text-slate-500 dark:text-slate-400">
-                        {{ $t('SALES_PIPELINE_SETTINGS.POSITION') }}: {{ stage.position }}
+                        {{ $t('SALES_PIPELINE_SETTINGS.ORDER') }}: {{ stage.position }}
                         {{ stage.conversations_count ? `• ${stage.conversations_count} ${$t('SALES_PIPELINE_SETTINGS.CONVERSATIONS')}` : '' }}
                       </div>
                     </div>

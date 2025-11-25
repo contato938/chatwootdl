@@ -1,0 +1,70 @@
+{
+  "SALES_PIPELINE_SETTINGS": {
+    "TITLE": "Configurações do Pipeline",
+    "SUBTITLE": "Personalize os estágios do seu funil de vendas",
+    "ADD_STAGE": "Adicionar Estágio",
+    "PIPELINE_INFO": "Informações do Pipeline",
+    "PIPELINE_NAME": "Nome do Pipeline",
+    "TOTAL_STAGES": "Total de Estágios",
+    "ACTIVE_STAGES": "Estágios Ativos",
+    "STAGES_LIST": "Estágios do Pipeline",
+    "NO_STAGES": "Nenhum estágio configurado ainda",
+    "CREATE_FIRST_STAGE": "Criar Primeiro Estágio",
+    "ORDER": "Ordem",
+    "CONVERSATIONS": "conversas",
+    "BADGES": {
+      "DEFAULT": "Inicial",
+      "WON": "Ganho",
+      "LOST": "Perdido"
+    },
+    "EDIT_STAGE": "Editar Estágio",
+    "CREATE_STAGE": "Criar Estágio",
+    "DELETE_STAGE": "Excluir Estágio",
+    "DELETE_STAGE_TITLE": "Excluir Estágio do Pipeline",
+    "FORM": {
+      "NAME": "Nome do Estágio",
+      "NAME_PLACEHOLDER": "Ex: Primeiro Contato, Proposta, Negociação...",
+      "NAME_HELP": "Dê um nome descritivo para este estágio do funil",
+      "COLOR": "Cor do Estágio",
+      "COLOR_HELP": "Escolha uma cor para identificar visualmente este estágio",
+      "POSITION": "Posição no Funil",
+      "POSITION_HELP": "Define a ordem deste estágio no pipeline",
+      "STAGE_TYPE": "Tipo de Estágio",
+      "STAGE_TYPE_HELP": "Defina o comportamento especial deste estágio:",
+      "IS_DEFAULT": "Estágio inicial (novas conversas começam aqui)",
+      "IS_DEFAULT_HELP": "Conversas novas serão automaticamente colocadas neste estágio",
+      "IS_CLOSED_WON": "Venda ganha (negócio fechado com sucesso)",
+      "IS_CLOSED_WON_HELP": "Marque quando o cliente fechar negócio",
+      "IS_CLOSED_LOST": "Venda perdida (negócio não concretizado)",
+      "IS_CLOSED_LOST_HELP": "Marque quando o cliente desistir ou recusar a proposta",
+      "CANCEL": "Cancelar",
+      "CREATE": "Criar Estágio",
+      "UPDATE": "Atualizar Estágio"
+    },
+    "DELETE": {
+      "WARNING_TITLE": "Excluir Estágio do Pipeline",
+      "WARNING_MESSAGE": "Tem certeza que deseja excluir o estágio \"%{stageName}\"? Esta ação não pode ser desfeita.",
+      "CONVERSATIONS_WARNING": "Existem %{count} conversas neste estágio. Você deve escolher para onde movê-las.",
+      "MIGRATE_STAGE": "Mover conversas para *",
+      "SELECT_STAGE": "Selecione um estágio de destino",
+      "MIGRATION_NOTE": "Todas as conversas deste estágio serão movidas para o estágio selecionado.",
+      "CONFIRMATION_LABEL": "Confirmação",
+      "TYPE_STAGE_NAME": "Digite o nome do estágio \"%{stageName}\" para confirmar",
+      "CANCEL": "Cancelar",
+      "CONFIRM_DELETE": "Sim, Excluir Estágio"
+    },
+    "SUCCESS": {
+      "PIPELINE_UPDATED": "Pipeline atualizado com sucesso",
+      "STAGE_CREATED": "Estágio criado com sucesso",
+      "STAGE_UPDATED": "Estágio atualizado com sucesso",
+      "STAGE_DELETED": "Estágio excluído com sucesso"
+    },
+    "ERROR": {
+      "LOAD_FAILED": "Erro ao carregar configurações do pipeline",
+      "UPDATE_FAILED": "Erro ao atualizar pipeline",
+      "STAGE_SAVE_FAILED": "Erro ao salvar estágio",
+      "STAGE_DELETE_FAILED": "Erro ao excluir estágio",
+      "REORDER_FAILED": "Erro ao reordenar estágios"
+    }
+  }
+}

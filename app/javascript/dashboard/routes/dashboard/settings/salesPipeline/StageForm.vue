@@ -39,9 +39,12 @@
 
         <!-- Position -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
             {{ $t('SALES_PIPELINE_SETTINGS.FORM.POSITION') }} *
           </label>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">
+            {{ $t('SALES_PIPELINE_SETTINGS.FORM.POSITION_HELP') }}
+          </p>
           <select
             v-model.number="form.position"
             required
@@ -62,42 +65,60 @@
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">
             {{ $t('SALES_PIPELINE_SETTINGS.FORM.STAGE_TYPE') }}
           </label>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">
+            {{ $t('SALES_PIPELINE_SETTINGS.FORM.STAGE_TYPE_HELP') }}
+          </p>
 
-          <div class="space-y-2">
-            <label class="flex items-center">
+          <div class="space-y-3 bg-slate-50 dark:bg-slate-800 rounded-lg p-4">
+            <label class="flex items-start">
               <input
                 v-model="form.is_default"
                 type="checkbox"
-                class="rounded border-slate-300 text-woot-500 focus:ring-woot-500 dark:border-slate-600 dark:bg-slate-800"
+                class="mt-1 rounded border-slate-300 text-woot-500 focus:ring-woot-500 dark:border-slate-600 dark:bg-slate-700"
                 @change="handleDefaultChange"
               />
-              <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-                {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_DEFAULT') }}
-              </span>
+              <div class="ml-3">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                  {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_DEFAULT') }}
+                </span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_DEFAULT_HELP') }}
+                </p>
+              </div>
             </label>
 
-            <label class="flex items-center">
+            <label class="flex items-start">
               <input
                 v-model="form.is_closed_won"
                 type="checkbox"
-                class="rounded border-slate-300 text-woot-500 focus:ring-woot-500 dark:border-slate-600 dark:bg-slate-800"
+                class="mt-1 rounded border-slate-300 text-woot-500 focus:ring-woot-500 dark:border-slate-600 dark:bg-slate-700"
                 @change="handleClosedWonChange"
               />
-              <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-                {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_CLOSED_WON') }}
-              </span>
+              <div class="ml-3">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                  {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_CLOSED_WON') }}
+                </span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_CLOSED_WON_HELP') }}
+                </p>
+              </div>
             </label>
 
-            <label class="flex items-center">
+            <label class="flex items-start">
               <input
                 v-model="form.is_closed_lost"
                 type="checkbox"
-                class="rounded border-slate-300 text-woot-500 focus:ring-woot-500 dark:border-slate-600 dark:bg-slate-800"
+                class="mt-1 rounded border-slate-300 text-woot-500 focus:ring-woot-500 dark:border-slate-600 dark:bg-slate-700"
                 @change="handleClosedLostChange"
               />
-              <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-                {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_CLOSED_LOST') }}
-              </span>
+              <div class="ml-3">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                  {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_CLOSED_LOST') }}
+                </span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  {{ $t('SALES_PIPELINE_SETTINGS.FORM.IS_CLOSED_LOST_HELP') }}
+                </p>
+              </div>
             </label>
           </div>
         </div>
