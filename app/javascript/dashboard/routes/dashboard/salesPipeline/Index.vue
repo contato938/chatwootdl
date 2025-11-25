@@ -33,7 +33,7 @@
             </label>
             <select
               v-model="filters.inbox_id"
-              class="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-woot-500 dark:bg-slate-800 dark:text-slate-50"
+              class="h-8 pl-3 pr-8 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-woot-500 focus:border-woot-500"
               @change="loadKanbanData"
             >
               <option value="">
@@ -55,11 +55,11 @@
             </label>
             <select
               v-model="filters.assignee_id"
-              class="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-woot-500 dark:bg-slate-800 dark:text-slate-50"
+              class="h-8 pl-3 pr-8 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-woot-500 focus:border-woot-500"
               @change="loadKanbanData"
             >
               <option value="">
-                {{ $t('SALES_PIPELINE.FILTERS.ALL_AGENTS') }}
+                {{ $t('SALES_PIPELINE.ALL_AGENTS') }}
               </option>
               <option
                 v-for="agent in agents"

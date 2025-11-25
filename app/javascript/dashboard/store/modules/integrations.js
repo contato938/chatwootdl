@@ -41,7 +41,19 @@ export const actions = {
     commit(types.default.SET_INTEGRATIONS_UI_FLAG, { isFetching: true });
     try {
       const response = await IntegrationsAPI.get();
-      commit(types.default.SET_INTEGRATIONS, response.data.payload);
+      const integrations = response.data.payload;
+      // Inject WooCommerce if not present
+      if (!integrations.find(i => i.id === 'woocommerce')) {
+        integrations.push({
+          id: 'woocommerce',
+          name: 'WooCommerce',
+          description: 'Connect your WooCommerce store to view products in conversations',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/WooCommerce_logo.svg/1200px-WooCommerce_logo.svg.png',
+          enabled: true,
+          action: '/app/accounts/{accountId}/settings/integrations/woocommerce',
+        });
+      }
+      commit(types.default.SET_INTEGRATIONS, integrations);
       commit(types.default.SET_INTEGRATIONS_UI_FLAG, { isFetching: false });
     } catch (error) {
       commit(types.default.SET_INTEGRATIONS_UI_FLAG, { isFetching: false });
