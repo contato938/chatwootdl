@@ -1,5 +1,5 @@
+/* global axios */
 import types from 'dashboard/store/mutation-types';
-import axios from 'axios';
 
 const state = {
   salesPipeline: null,
