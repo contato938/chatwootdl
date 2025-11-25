@@ -42,7 +42,7 @@ class SalesPipelineStage < ApplicationRecord
     return unless saved_changes.key?(:name) || saved_changes.key?(:color)
 
     label.update!(
-      title: name,
+      title: self.class.label_title_from(name),
       color: color
     )
   end
@@ -51,6 +51,11 @@ class SalesPipelineStage < ApplicationRecord
     return unless label.present?
 
     label.destroy if label.conversations.empty?
+  end
+
+  def self.label_title_from(name)
+    sanitized = name.to_s.parameterize(separator: '_')
+    sanitized.presence || 'etapa'
   end
 
   def at_most_one_default_stage

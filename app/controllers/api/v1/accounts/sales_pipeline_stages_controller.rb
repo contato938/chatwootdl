@@ -16,7 +16,7 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
   def create
     ActiveRecord::Base.transaction do
       label = current_account.labels.create!(
-        title: stage_params[:name],
+        title: SalesPipelineStage.label_title_from(stage_params[:name]),
         color: stage_params[:color],
         description: "Estágio do pipeline de vendas: #{stage_params[:name]}"
       )
