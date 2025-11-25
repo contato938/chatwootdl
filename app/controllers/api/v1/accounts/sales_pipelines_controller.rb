@@ -1,7 +1,7 @@
 class Api::V1::Accounts::SalesPipelinesController < Api::V1::Accounts::BaseController
   before_action :current_account
   before_action :fetch_sales_pipeline, except: [:index, :create]
-  before_action :check_authorization
+  before_action :authorize_sales_pipeline
 
   def index
     @sales_pipeline = current_account.sales_pipelines.first_or_create!
@@ -33,5 +33,9 @@ class Api::V1::Accounts::SalesPipelinesController < Api::V1::Accounts::BaseContr
 
   def permitted_params
     params.require(:sales_pipeline).permit(:name)
+  end
+
+  def authorize_sales_pipeline
+    authorize(@sales_pipeline || SalesPipeline.new(account: current_account))
   end
 end

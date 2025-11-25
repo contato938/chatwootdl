@@ -2,7 +2,7 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
   before_action :current_account
   before_action :fetch_sales_pipeline
   before_action :fetch_stage, except: [:index, :create]
-  before_action :check_authorization
+  before_action :authorize_stage
 
   def index
     @stages = @sales_pipeline.sales_pipeline_stages.includes(:label)
@@ -90,5 +90,9 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
       stage_manager = manager.new(conversation: conversation, account: current_account)
       stage_manager.update_stage!(migration_stage)
     end
+  end
+
+  def authorize_stage
+    authorize(@stage || SalesPipelineStage.new(account: current_account, sales_pipeline: @sales_pipeline))
   end
 end

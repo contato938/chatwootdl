@@ -5,6 +5,10 @@ class SalesPipelineStagePolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    account_member?
+  end
+
   def show?
     account_member?
   end
