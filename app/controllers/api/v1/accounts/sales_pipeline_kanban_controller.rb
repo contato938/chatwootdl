@@ -6,6 +6,7 @@ class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::Base
   def show
     @stages = @sales_pipeline.sales_pipeline_stages.includes(:label)
     @kanban_data = build_kanban_data
+    render json: @kanban_data
   end
 
   private

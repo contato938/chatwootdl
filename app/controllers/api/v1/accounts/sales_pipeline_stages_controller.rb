@@ -6,9 +6,12 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
 
   def index
     @stages = @sales_pipeline.sales_pipeline_stages.includes(:label)
+    render json: @stages.map { |stage| stage_response(stage) }
   end
 
-  def show; end
+  def show
+    render json: stage_response(@stage)
+  end
 
   def create
     ActiveRecord::Base.transaction do
@@ -22,12 +25,16 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
         stage_params.merge(label_id: label.id)
       )
     end
+
+    render json: stage_response(@stage), status: :created
   end
 
   def update
     ActiveRecord::Base.transaction do
       @stage.update!(stage_params)
     end
+
+    render json: stage_response(@stage)
   end
 
   def destroy
@@ -94,5 +101,19 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
 
   def authorize_stage
     authorize(@stage || SalesPipelineStage.new(account: current_account, sales_pipeline: @sales_pipeline))
+  end
+
+  def stage_response(stage)
+    {
+      id: stage.id,
+      name: stage.name,
+      color: stage.color,
+      position: stage.position,
+      is_default: stage.is_default,
+      is_closed_won: stage.is_closed_won,
+      is_closed_lost: stage.is_closed_lost,
+      label_id: stage.label_id,
+      label: stage.label&.slice(:id, :title, :color)
+    }
   end
 end
