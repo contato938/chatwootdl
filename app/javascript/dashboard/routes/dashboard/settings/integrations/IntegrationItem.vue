@@ -24,6 +24,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  logo: {
+    type: String,
+    default: '',
+  },
 });
 
 const getters = useStoreGetters();
@@ -54,11 +58,11 @@ const actionURL = computed(() =>
     <div class="flex items-start justify-between">
       <div class="flex h-12 w-12 mb-4">
         <img
-          :src="`/dashboard/images/integrations/${id}.png`"
+          :src="logo || `/dashboard/images/integrations/${id}.png`"
           class="max-w-full rounded-md border border-n-weak shadow-sm block dark:hidden bg-n-alpha-3 dark:bg-n-alpha-2"
         />
         <img
-          :src="`/dashboard/images/integrations/${id}-dark.png`"
+          :src="logo || `/dashboard/images/integrations/${id}-dark.png`"
           class="max-w-full rounded-md border border-n-weak shadow-sm hidden dark:block bg-n-alpha-3 dark:bg-n-alpha-2"
         />
       </div>
