@@ -4,7 +4,7 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
   before_action :check_authorization
 
   def show
-    stage_manager = SalesPipeline::ConversationStageManager.new(
+    stage_manager = SalesPipelineServices::ConversationStageManager.new(
       conversation: @conversation,
       account: current_account
     )
@@ -12,7 +12,7 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
   end
 
   def update
-    stage_manager = SalesPipeline::ConversationStageManager.new(
+    stage_manager = SalesPipelineServices::ConversationStageManager.new(
       conversation: @conversation,
       account: current_account
     )
@@ -24,7 +24,7 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
   end
 
   def destroy
-    stage_manager = SalesPipeline::ConversationStageManager.new(
+    stage_manager = SalesPipelineServices::ConversationStageManager.new(
       conversation: @conversation,
       account: current_account
     )

@@ -1,4 +1,4 @@
-module SalesPipeline
+module SalesPipelineServices
   class ConversationStageManager
     include ActiveModel::Model
     include ActiveModel::Attributes

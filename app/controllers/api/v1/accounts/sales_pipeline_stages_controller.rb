@@ -84,7 +84,7 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
 
   def migrate_conversations!(migration_stage_id)
     migration_stage = @sales_pipeline.sales_pipeline_stages.find(migration_stage_id)
-    manager = SalesPipeline::ConversationStageManager
+    manager = SalesPipelineServices::ConversationStageManager
 
     @stage.conversations.find_each do |conversation|
       stage_manager = manager.new(conversation: conversation, account: current_account)
