@@ -31,7 +31,7 @@ class SalesPipeline < ApplicationRecord
         )
 
         sales_pipeline_stages.create!(
-          stage_data.merge(label_id: label.id)
+          stage_data.merge(label_id: label.id, account: account)
         )
       end
     end

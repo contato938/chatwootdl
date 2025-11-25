@@ -22,7 +22,7 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
       )
 
       @stage = @sales_pipeline.sales_pipeline_stages.create!(
-        stage_params.merge(label_id: label.id)
+        stage_params.merge(label_id: label.id, account: current_account)
       )
     end
 
