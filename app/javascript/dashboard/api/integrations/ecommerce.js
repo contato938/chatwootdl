@@ -11,6 +11,12 @@ class EcommerceAPI extends ApiClient {
     return axios.get(`${this.url}/products`, { params });
   }
 
+  getOrders(contactId) {
+    return axios.get(`${this.url}/orders`, {
+      params: { contact_id: contactId },
+    });
+  }
+
   sendProduct(conversationId, productId) {
     return axios.post(`${this.url}/send_product`, {
       conversation_id: conversationId,

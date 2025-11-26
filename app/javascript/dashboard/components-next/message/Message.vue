@@ -37,6 +37,7 @@ import LocationBubble from './bubbles/Location.vue';
 import CSATBubble from './bubbles/CSAT.vue';
 import FormBubble from './bubbles/Form.vue';
 import VoiceCallBubble from './bubbles/VoiceCall.vue';
+import EcommerceProductBubble from './bubbles/EcommerceProduct.vue';
 
 import MessageError from './MessageError.vue';
 import ContextMenu from 'dashboard/modules/conversations/components/MessageContextMenu.vue';
@@ -297,6 +298,10 @@ const componentToRender = computed(() => {
 
   if (props.contentAttributes.type === 'dyte') {
     return DyteBubble;
+  }
+
+  if (props.contentAttributes.type === 'ecommerce_product') {
+    return EcommerceProductBubble;
   }
 
   if (props.contentAttributes.imageType === 'story_mention') {

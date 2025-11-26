@@ -4,6 +4,7 @@ import { useAlert } from 'dashboard/composables';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import ProductItem from './ProductItem.vue';
 import EcommerceAPI from 'dashboard/api/integrations/ecommerce';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   conversationId: {
@@ -25,6 +26,8 @@ const stockFilters = [
   { value: 'OUT_OF_STOCK', label: 'OUT_OF_STOCK' },
 ];
 
+const { t } = useI18n();
+
 const fetchProducts = async () => {
   try {
     loading.value = true;
@@ -37,7 +40,7 @@ const fetchProducts = async () => {
     products.value = response.data.products || [];
   } catch (e) {
     error.value =
-      e.response?.data?.error || 'ECOMMERCE.PRODUCTS.ERROR';
+      e.response?.data?.error || t('ECOMMERCE.PRODUCTS.ERROR');
   } finally {
     loading.value = false;
   }
@@ -64,11 +67,11 @@ const handleSearch = () => {
 };
 
 const handleProductSent = () => {
-  useAlert('Product link sent successfully');
+  useAlert(t('ECOMMERCE.PRODUCTS.SENT_SUCCESS'));
 };
 
 const handleProductError = () => {
-  useAlert('Failed to send product link. Please try again.');
+  useAlert(t('ECOMMERCE.PRODUCTS.SENT_ERROR'));
 };
 
 watch(searchQuery, () => {
@@ -128,7 +131,7 @@ onMounted(() => {
       </div>
       <div v-else-if="error" class="text-center text-n-ruby-11 p-4">
         <i class="i-ph-warning-circle text-4xl mb-3" />
-        <p class="text-sm">{{ $t('ECOMMERCE.PRODUCTS.ERROR') }}</p>
+        <p class="text-sm">{{ error }}</p>
       </div>
       <div
         v-else-if="!filteredProducts.length"

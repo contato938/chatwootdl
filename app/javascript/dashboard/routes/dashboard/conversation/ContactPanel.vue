@@ -18,7 +18,7 @@ import CustomAttributes from './customAttributes/CustomAttributes.vue';
 import ConversationSalesStage from '../../../components/conversation/ConversationSalesStage.vue';
 import Draggable from 'vuedraggable';
 import MacrosList from './Macros/List.vue';
-import ShopifyOrdersList from 'dashboard/components/widgets/conversation/ShopifyOrdersList.vue';
+import OrdersList from 'dashboard/components-next/Ecommerce/OrdersList.vue';
 import SidebarActionsHeader from 'dashboard/components-next/SidebarActionsHeader.vue';
 import LinearIssuesList from 'dashboard/components/widgets/conversation/linear/IssuesList.vue';
 import LinearSetupCTA from 'dashboard/components/widgets/conversation/linear/LinearSetupCTA.vue';
@@ -49,8 +49,13 @@ const shopifyIntegration = useFunctionGetter(
   'shopify'
 );
 
-const isShopifyFeatureEnabled = computed(
-  () => shopifyIntegration.value.enabled
+const woocommerceIntegration = useFunctionGetter(
+  'integrations/getIntegration',
+  'woocommerce'
+);
+
+const isEcommerceIntegrationEnabled = computed(
+  () => shopifyIntegration.value.enabled || woocommerceIntegration.value.enabled
 );
 
 const linearIntegration = useFunctionGetter(
@@ -116,6 +121,8 @@ onMounted(() => {
   store.dispatch('attributes/get', 0);
   // Load integrations to ensure linear integration state is available
   store.dispatch('integrations/get', 'linear');
+  store.dispatch('integrations/get', 'woocommerce');
+  store.dispatch('integrations/get', 'shopify');
 });
 </script>
 
@@ -260,18 +267,18 @@ onMounted(() => {
           </div>
           <div
             v-else-if="
-              element.name === 'shopify_orders' && isShopifyFeatureEnabled
+              element.name === 'shopify_orders' && isEcommerceIntegrationEnabled
             "
           >
             <AccordionItem
-              :title="$t('CONVERSATION_SIDEBAR.ACCORDION.SHOPIFY_ORDERS')"
+              :title="$t('CONVERSATION_SIDEBAR.ACCORDION.ECOMMERCE_ORDERS')"
               :is-open="isContactSidebarItemOpen('is_shopify_orders_open')"
               compact
               @toggle="
                 value => toggleSidebarUIState('is_shopify_orders_open', value)
               "
             >
-              <ShopifyOrdersList :contact-id="contactId" />
+              <OrdersList :contact-id="contactId" />
             </AccordionItem>
           </div>
           <div v-else-if="element.name === 'contact_notes'">

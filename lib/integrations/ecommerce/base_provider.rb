@@ -13,6 +13,10 @@ module Integrations
         raise NotImplementedError, 'Subclasses must implement get_product'
       end
 
+      def list_orders(contact:)
+        raise NotImplementedError, 'Subclasses must implement list_orders'
+      end
+
       private
 
       def normalize_product(raw_product, provider)
@@ -50,6 +54,26 @@ module Integrations
         return 'unknown' if status.blank?
 
         status == 'instock' || status == 'in_stock' ? 'in_stock' : 'out_of_stock'
+      end
+
+      def normalize_order(raw_order, provider)
+        {
+          id: raw_order[:id] || raw_order['id'],
+          order_number: raw_order[:order_number] || raw_order['order_number'] || raw_order[:id] || raw_order['id'],
+          created_at: raw_order[:created_at] || raw_order['created_at'] || raw_order[:date_created] || raw_order['date_created'],
+          total_price: raw_order[:total_price] || raw_order['total_price'] || raw_order[:total] || raw_order['total'],
+          currency: raw_order[:currency] || raw_order['currency'],
+          financial_status: raw_order[:financial_status] || raw_order['financial_status'],
+          fulfillment_status: raw_order[:fulfillment_status] || raw_order['fulfillment_status'],
+          status: raw_order[:status] || raw_order['status'],
+          order_url: raw_order[:order_url] || raw_order['order_url'] || raw_order[:admin_url] || raw_order['admin_url'],
+          provider: provider
+        }
+      end
+
+      def store_url
+        settings = @hook.settings.with_indifferent_access
+        settings[:store_url] || settings[:store_base_url] || @hook.reference_id
       end
     end
   end

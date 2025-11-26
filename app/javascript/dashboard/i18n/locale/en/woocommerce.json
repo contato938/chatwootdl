@@ -38,6 +38,14 @@
         "PLACEHOLDER": "cs_xxxxxxxxxxxxxxxx",
         "HELP": "Generated along with the Consumer Key in REST API settings"
       },
+      "VERIFY_SSL": {
+        "LABEL": "Verify SSL",
+        "HELP": "Disable only if your store uses a self-signed certificate"
+      },
+      "REQUEST_TIMEOUT": {
+        "LABEL": "Request timeout (seconds)",
+        "HELP": "Optional: Override the WooCommerce API request timeout"
+      },
       "API_VERSION": {
         "LABEL": "API Version",
         "HELP": "WooCommerce REST API version (default: wc/v3)"

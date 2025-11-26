@@ -11,10 +11,41 @@
       "SENDING": "Sending...",
       "SENT_SUCCESS": "Product link sent successfully",
       "SENT_ERROR": "Failed to send product link. Please try again.",
+      "VIEW": "View product",
       "PRICE": "Price",
       "SKU": "SKU",
       "IN_STOCK": "In stock",
       "OUT_OF_STOCK": "Out of stock",
+      "PROVIDER": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify"
+      }
+    },
+    "ORDERS": {
+      "TITLE": "Orders",
+      "NO_ORDERS": "No orders found",
+      "MISSING_IDENTIFIERS": "Email or phone number is required to find related orders.",
+      "ERROR": "Error loading orders",
+      "ORDER_ID": "Order #{id}",
+      "STATUS": {
+        "PAID": "Paid",
+        "PENDING": "Pending",
+        "AUTHORIZED": "Authorized",
+        "PARTIALLY_PAID": "Partially Paid",
+        "PARTIALLY_REFUNDED": "Partially Refunded",
+        "REFUNDED": "Refunded",
+        "VOIDED": "Voided",
+        "PROCESSING": "Processing",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled",
+        "FAILED": "Failed",
+        "ON_HOLD": "On hold"
+      },
+      "FULFILLMENT": {
+        "FULFILLED": "Fulfilled",
+        "PARTIALLY_FULFILLED": "Partially fulfilled",
+        "UNFULFILLED": "Unfulfilled"
+      },
       "PROVIDER": {
         "WOOCOMMERCE": "WooCommerce",
         "SHOPIFY": "Shopify"

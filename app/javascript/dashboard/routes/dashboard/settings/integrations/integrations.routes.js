@@ -10,6 +10,7 @@ import SettingsContent from '../Wrapper.vue';
 import Linear from './Linear.vue';
 import Notion from './Notion.vue';
 import Shopify from './Shopify.vue';
+import Woocommerce from './Woocommerce.vue';
 
 export default {
   routes: [
@@ -109,6 +110,15 @@ export default {
             permissions: ['administrator'],
           },
           props: route => ({ error: route.query.error }),
+        },
+        {
+          path: 'woocommerce',
+          name: 'settings_integrations_woocommerce',
+          component: Woocommerce,
+          meta: {
+            featureFlag: FEATURE_FLAGS.INTEGRATIONS,
+            permissions: ['administrator'],
+          },
         },
         {
           path: ':integration_id',
