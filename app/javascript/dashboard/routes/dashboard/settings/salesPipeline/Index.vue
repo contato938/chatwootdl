@@ -73,80 +73,82 @@
           <div v-else class="divide-y divide-slate-200 dark:divide-slate-700">
             <draggable
               v-model="localStages"
+              item-key="id"
               group="stages"
               @end="onStageOrderChange"
               handle=".drag-handle"
             >
-              <div
-                v-for="stage in localStages"
-                :key="stage.id"
-                class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-4">
-                    <!-- Drag Handle -->
-                    <div class="drag-handle cursor-move text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                      <fluent-icon icon="drag" />
-                    </div>
+              <template #item="{ element: stage }">
+                <div
+                  :key="stage.id"
+                  class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                      <!-- Drag Handle -->
+                      <div class="drag-handle cursor-move text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                        <fluent-icon icon="drag" />
+                      </div>
 
-                    <!-- Stage Color -->
-                    <div class="flex items-center space-x-2">
-                      <div
-                        class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
-                        :style="{ backgroundColor: stage.color }"
-                      />
-                    </div>
-
-                    <!-- Stage Info -->
-                    <div>
+                      <!-- Stage Color -->
                       <div class="flex items-center space-x-2">
-                        <h4 class="font-medium text-slate-900 dark:text-slate-50">
-                          {{ stage.name }}
-                        </h4>
-                        <span
-                          v-if="stage.is_default"
-                          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        >
-                          {{ $t('SALES_PIPELINE_SETTINGS.BADGES.DEFAULT') }}
-                        </span>
-                        <span
-                          v-if="stage.is_closed_won"
-                          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        >
-                          ✓ {{ $t('SALES_PIPELINE_SETTINGS.BADGES.WON') }}
-                        </span>
-                        <span
-                          v-if="stage.is_closed_lost"
-                          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          ✗ {{ $t('SALES_PIPELINE_SETTINGS.BADGES.LOST') }}
-                        </span>
+                        <div
+                          class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
+                          :style="{ backgroundColor: stage.color }"
+                        />
                       </div>
-                      <div class="text-sm text-slate-500 dark:text-slate-400">
-                        {{ $t('SALES_PIPELINE_SETTINGS.ORDER') }}: {{ stage.position }}
-                        {{ stage.conversations_count ? `• ${stage.conversations_count} ${$t('SALES_PIPELINE_SETTINGS.CONVERSATIONS')}` : '' }}
+
+                      <!-- Stage Info -->
+                      <div>
+                        <div class="flex items-center space-x-2">
+                          <h4 class="font-medium text-slate-900 dark:text-slate-50">
+                            {{ stage.name }}
+                          </h4>
+                          <span
+                            v-if="stage.is_default"
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                          >
+                            {{ $t('SALES_PIPELINE_SETTINGS.BADGES.DEFAULT') }}
+                          </span>
+                          <span
+                            v-if="stage.is_closed_won"
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          >
+                            ✓ {{ $t('SALES_PIPELINE_SETTINGS.BADGES.WON') }}
+                          </span>
+                          <span
+                            v-if="stage.is_closed_lost"
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          >
+                            ✗ {{ $t('SALES_PIPELINE_SETTINGS.BADGES.LOST') }}
+                          </span>
+                        </div>
+                        <div class="text-sm text-slate-500 dark:text-slate-400">
+                          {{ $t('SALES_PIPELINE_SETTINGS.ORDER') }}: {{ stage.position }}
+                          {{ stage.conversations_count ? `• ${stage.conversations_count} ${$t('SALES_PIPELINE_SETTINGS.CONVERSATIONS')}` : '' }}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <!-- Actions -->
-                  <div class="flex items-center space-x-2">
-                    <button
-                      class="btn btn--secondary btn--sm"
-                      @click="editStage(stage)"
-                    >
-                      <fluent-icon icon="edit" />
-                    </button>
-                    <button
-                      class="btn btn--secondary btn--sm"
-                      @click="deleteStage(stage)"
-                      :disabled="stage.conversations_count > 0"
-                    >
-                      <fluent-icon icon="delete" />
-                    </button>
+                    <!-- Actions -->
+                    <div class="flex items-center space-x-2">
+                      <button
+                        class="btn btn--secondary btn--sm"
+                        @click="editStage(stage)"
+                      >
+                        <fluent-icon icon="edit" />
+                      </button>
+                      <button
+                        class="btn btn--secondary btn--sm"
+                        @click="deleteStage(stage)"
+                        :disabled="stage.conversations_count > 0"
+                      >
+                        <fluent-icon icon="delete" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </template>
             </draggable>
           </div>
         </div>

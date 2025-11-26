@@ -12,7 +12,9 @@ class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::Base
   private
 
   def fetch_sales_pipeline
-    @sales_pipeline = current_account.sales_pipelines.first_or_create!
+    @sales_pipeline = current_account.sales_pipelines.first_or_create!(
+      name: Api::V1::Accounts::SalesPipelinesController::DEFAULT_PIPELINE_NAME
+    )
   end
 
   def build_kanban_data

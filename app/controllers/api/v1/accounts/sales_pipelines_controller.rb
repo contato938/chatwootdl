@@ -1,10 +1,12 @@
 class Api::V1::Accounts::SalesPipelinesController < Api::V1::Accounts::BaseController
+  DEFAULT_PIPELINE_NAME = 'Default Sales Pipeline'.freeze
+
   before_action :current_account
   before_action :fetch_sales_pipeline, except: [:index, :create]
   before_action :authorize_sales_pipeline
 
   def index
-    @sales_pipeline = current_account.sales_pipelines.first_or_create!
+    @sales_pipeline = current_account.sales_pipelines.first_or_create!(default_pipeline_attributes)
     @stages = @sales_pipeline.sales_pipeline_stages.includes(:label)
     render json: pipeline_response(@sales_pipeline, @stages)
   end
@@ -15,7 +17,9 @@ class Api::V1::Accounts::SalesPipelinesController < Api::V1::Accounts::BaseContr
   end
 
   def create
-    @sales_pipeline = current_account.sales_pipelines.create!(permitted_params)
+    attrs = permitted_params.to_h
+    attrs[:name] = DEFAULT_PIPELINE_NAME if attrs[:name].blank?
+    @sales_pipeline = current_account.sales_pipelines.create!(attrs)
     render json: pipeline_response(@sales_pipeline), status: :created
   end
 
