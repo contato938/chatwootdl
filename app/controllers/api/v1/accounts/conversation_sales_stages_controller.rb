@@ -1,7 +1,7 @@
 class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::BaseController
   before_action :current_account
   before_action :fetch_conversation
-  before_action :check_authorization
+  before_action :authorize_conversation
 
   def show
     stage_manager = SalesPipelineServices::ConversationStageManager.new(
@@ -69,5 +69,9 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
       label_id: stage.label_id,
       label: stage.label&.slice(:id, :title, :color)
     }
+  end
+
+  def authorize_conversation
+    authorize(@conversation)
   end
 end
