@@ -15,14 +15,24 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
 
   def create
     ActiveRecord::Base.transaction do
+      safe_name = stage_params[:name].presence || 'Etapa'
+      safe_color = stage_params[:color].presence || '#1f93ff'
+      safe_position = stage_params[:position].presence || @sales_pipeline.sales_pipeline_stages.maximum(:position).to_i + 1
+
       label = current_account.labels.create!(
-        title: SalesPipelineStage.label_title_from(stage_params[:name]),
-        color: stage_params[:color],
-        description: "Estágio do pipeline de vendas: #{stage_params[:name]}"
+        title: SalesPipelineStage.label_title_from(safe_name),
+        color: safe_color,
+        description: "Estágio do pipeline de vendas: #{safe_name}"
       )
 
       @stage = @sales_pipeline.sales_pipeline_stages.create!(
-        stage_params.merge(label_id: label.id, account: current_account)
+        stage_params.merge(
+          name: safe_name,
+          color: safe_color,
+          position: safe_position,
+          label_id: label.id,
+          account: current_account
+        )
       )
     end
 
@@ -31,7 +41,10 @@ class Api::V1::Accounts::SalesPipelineStagesController < Api::V1::Accounts::Base
 
   def update
     ActiveRecord::Base.transaction do
-      @stage.update!(stage_params)
+      safe_name = stage_params[:name].presence || @stage.name
+      safe_color = stage_params[:color].presence || @stage.color
+
+      @stage.update!(stage_params.merge(name: safe_name, color: safe_color))
     end
 
     render json: stage_response(@stage)

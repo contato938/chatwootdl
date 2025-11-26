@@ -47,6 +47,10 @@ class Api::V1::Accounts::SalesPipelinesController < Api::V1::Accounts::BaseContr
     authorize(@sales_pipeline || SalesPipeline.new(account: current_account))
   end
 
+  def default_pipeline_attributes
+    { name: DEFAULT_PIPELINE_NAME }
+  end
+
   def pipeline_response(pipeline, stages = nil)
     stages ||= pipeline.sales_pipeline_stages.includes(:label)
 

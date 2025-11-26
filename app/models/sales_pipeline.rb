@@ -24,10 +24,13 @@ class SalesPipeline < ApplicationRecord
 
     default_stages.each do |stage_data|
       ActiveRecord::Base.transaction do
+        safe_name = stage_data[:name]
+        safe_color = stage_data[:color]
+
         label = account.labels.create!(
-          title: SalesPipelineStage.label_title_from(stage_data[:name]),
-          color: stage_data[:color],
-          description: "Estágio do pipeline de vendas: #{stage_data[:name]}"
+          title: SalesPipelineStage.label_title_from(safe_name),
+          color: safe_color,
+          description: "Estágio do pipeline de vendas: #{safe_name}"
         )
 
         sales_pipeline_stages.create!(
