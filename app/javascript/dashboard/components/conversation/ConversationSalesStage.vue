@@ -174,9 +174,22 @@ export default {
     },
   },
   mounted() {
+    this.ensureStagesLoaded();
     this.loadCurrentStage();
   },
   methods: {
+    async ensureStagesLoaded() {
+      if (this.stages.length > 0) return;
+
+      try {
+        await this.$store.dispatch('salesPipeline/fetchSalesPipeline', {
+          accountId: this.currentAccountId,
+        });
+      } catch (error) {
+        // ignore and let UI handle empty state
+      }
+    },
+
     async loadCurrentStage() {
       try {
         const response = await this.$store.dispatch('salesPipeline/fetchConversationStage', {

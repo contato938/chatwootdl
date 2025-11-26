@@ -142,6 +142,17 @@ const actions = {
       throw error;
     }
   },
+
+  async fetchConversationStage({ commit }, { accountId, conversationId }) {
+    try {
+      const response = await axios.get(
+        `/api/v1/accounts/${accountId}/conversations/${conversationId}/sales_stage`
+      );
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 const mutations = {

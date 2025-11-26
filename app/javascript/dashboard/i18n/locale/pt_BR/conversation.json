@@ -339,7 +339,8 @@
       "PREVIOUS_CONVERSATION": "Conversas anteriores",
       "MACROS": "Macros",
       "LINEAR_ISSUES": "Problemas do Linear vinculados",
-      "SHOPIFY_ORDERS": "Shopify Orders"
+      "SHOPIFY_ORDERS": "Pedidos Shopify",
+      "SALES_STAGE": "Etapa do Pipeline"
     },
     "SHOPIFY": {
       "ORDER_ID": "Order #{id}",
@@ -359,6 +360,21 @@
         "PARTIALLY_FULFILLED": "Partially Fulfilled",
         "UNFULFILLED": "Unfulfilled"
       }
+    },
+    "SALES_STAGE": "Etapa do Pipeline",
+    "NO_PIPELINE_CONFIGURED": "Nenhum pipeline configurado",
+    "CONFIGURE_PIPELINE": "Configurar Pipeline",
+    "SELECT_STAGE": "Selecionar etapa",
+    "CHANGE_STAGE": "Alterar etapa",
+    "REMOVE_STAGE": "Remover etapa",
+    "DEFAULT_STAGE": "Etapa padrão",
+    "CLOSED_WON": "Fechado Ganho",
+    "CLOSED_LOST": "Fechado Perdido",
+    "STAGE_UPDATED": "Etapa atualizada para %{stageName}",
+    "STAGE_REMOVED": "Etapa removida da conversa",
+    "ERROR": {
+      "UPDATE_FAILED": "Falha ao atualizar etapa",
+      "REMOVE_FAILED": "Falha ao remover etapa"
     }
   },
   "CONVERSATION_CUSTOM_ATTRIBUTES": {

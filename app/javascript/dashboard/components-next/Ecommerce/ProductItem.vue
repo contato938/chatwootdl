@@ -28,7 +28,21 @@ const sendProductLink = async () => {
       props.product.id
     );
     if (response.data) {
-      store.dispatch('conversations/addMessage', response.data);
+      const message = {
+        created_at: Math.floor(Date.now() / 1000),
+        message_type: 1,
+        content_type: 'integrations',
+        content_attributes: {
+          type: 'ecommerce_product',
+          product: props.product,
+        },
+        conversation_id: Number(props.conversationId),
+        status: 'sent',
+        ...response.data,
+      };
+      // Ensure conversation id matches selected chat to trigger local render
+      message.conversation_id = Number(message.conversation_id);
+      store.dispatch('conversations/addMessage', message);
     }
     emit('sent');
   } catch (error) {
