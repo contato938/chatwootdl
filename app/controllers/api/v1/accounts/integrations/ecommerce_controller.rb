@@ -55,9 +55,9 @@ class Api::V1::Accounts::Integrations::EcommerceController < Api::V1::Accounts::
       sender: current_user
     }
 
-    Messages::MessageBuilder.new(current_user, conversation, message_params).perform
+    message = Messages::MessageBuilder.new(current_user, conversation, message_params).perform
 
-    render json: { success: true }
+    render partial: 'api/v1/models/message', formats: [:json], locals: { message: message }
   rescue StandardError => e
     Rails.logger.error("Send product error: #{e.message}")
     render json: { error: e.message }, status: :unprocessable_entity

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import Button from 'dashboard/components-next/button/Button.vue';
 import EcommerceAPI from 'dashboard/api/integrations/ecommerce';
+import { useStore } from 'dashboard/composables/store';
 
 const props = defineProps({
   product: {
@@ -17,11 +18,18 @@ const props = defineProps({
 const emit = defineEmits(['sent']);
 
 const sending = ref(false);
+const store = useStore();
 
 const sendProductLink = async () => {
   sending.value = true;
   try {
-    await EcommerceAPI.sendProduct(props.conversationId, props.product.id);
+    const response = await EcommerceAPI.sendProduct(
+      props.conversationId,
+      props.product.id
+    );
+    if (response.data) {
+      store.dispatch('conversations/addMessage', response.data);
+    }
     emit('sent');
   } catch (error) {
     console.error('Failed to send product link:', error);
