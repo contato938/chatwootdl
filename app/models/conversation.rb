@@ -118,6 +118,7 @@ class Conversation < ApplicationRecord
   after_update_commit :execute_after_update_commit_callbacks
   after_create_commit :notify_conversation_creation
   after_create_commit :load_attributes_created_by_db_triggers
+  after_create_commit :assign_default_sales_stage
 
   delegate :auto_resolve_after, to: :account
 
@@ -309,6 +310,18 @@ class Conversation < ApplicationRecord
     return unless additional_attributes['referer']
 
     self['additional_attributes']['referer'] = nil unless url_valid?(additional_attributes['referer'])
+  end
+
+  def assign_default_sales_stage
+    return unless account.present?
+
+    default_stage = account.sales_pipeline_stages.default_stage.first || account.sales_pipeline_stages.first
+    return unless default_stage.present?
+
+    stage_manager = SalesPipelineServices::ConversationStageManager.new(conversation: self, account: account)
+    stage_manager.update_stage!(default_stage)
+  rescue StandardError => e
+    Rails.logger.info("[Conversation##{id}] Skipping default sales stage assignment: #{e.message}")
   end
 
   # creating db triggers

@@ -55,7 +55,7 @@ const actions = {
     }
   },
 
-  async createStage({ commit }, { accountId, stageData }) {
+  async createStage({ commit, dispatch }, { accountId, stageData }) {
     commit(types.SET_SALES_PIPELINE_UI_FLAG, { isCreating: true });
     try {
       const response = await axios.post(
@@ -63,6 +63,7 @@ const actions = {
         { stage: stageData }
       );
       commit(types.ADD_SALES_PIPELINE_STAGE, response.data);
+      await dispatch('fetchSalesPipeline', { accountId });
       return response.data;
     } catch (error) {
       throw error;
@@ -71,7 +72,7 @@ const actions = {
     }
   },
 
-  async updateStage({ commit }, { accountId, stageId, stageData }) {
+  async updateStage({ commit, dispatch }, { accountId, stageId, stageData }) {
     commit(types.SET_SALES_PIPELINE_UI_FLAG, { isUpdating: true });
     try {
       const response = await axios.put(
@@ -79,6 +80,7 @@ const actions = {
         { stage: stageData }
       );
       commit(types.UPDATE_SALES_PIPELINE_STAGE, response.data);
+      await dispatch('fetchSalesPipeline', { accountId });
       return response.data;
     } catch (error) {
       throw error;
@@ -87,7 +89,7 @@ const actions = {
     }
   },
 
-  async deleteStage({ commit }, { accountId, stageId, migrationStageId }) {
+  async deleteStage({ commit, dispatch }, { accountId, stageId, migrationStageId }) {
     commit(types.SET_SALES_PIPELINE_UI_FLAG, { isDeleting: true });
     try {
       await axios.delete(
@@ -95,6 +97,7 @@ const actions = {
         { data: { stage: { migration_stage_id: migrationStageId } } }
       );
       commit(types.REMOVE_SALES_PIPELINE_STAGE, stageId);
+      await dispatch('fetchSalesPipeline', { accountId });
     } catch (error) {
       throw error;
     } finally {
@@ -102,7 +105,7 @@ const actions = {
     }
   },
 
-  async reorderStages({ commit }, { accountId, stages }) {
+  async reorderStages({ commit, dispatch }, { accountId, stages }) {
     commit(types.SET_SALES_PIPELINE_UI_FLAG, { isUpdating: true });
     try {
       await axios.put(
@@ -110,6 +113,7 @@ const actions = {
         { stages }
       );
       commit(types.REORDER_SALES_PIPELINE_STAGES, stages);
+      await dispatch('fetchSalesPipeline', { accountId });
     } catch (error) {
       throw error;
     } finally {
