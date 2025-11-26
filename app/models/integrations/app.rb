@@ -57,7 +57,7 @@ class Integrations::App
     when 'shopify'
       shopify_enabled?(account)
     when 'woocommerce'
-      true
+      woocommerce_enabled?(account)
     when 'leadsquared'
       account.feature_enabled?('crm_integration')
     when 'notion'
@@ -127,5 +127,9 @@ class Integrations::App
 
   def notion_enabled?(account)
     account.feature_enabled?('notion_integration') && GlobalConfigService.load('NOTION_CLIENT_ID', nil).present?
+  end
+
+  def woocommerce_enabled?(account)
+    account.feature_enabled?('woocommerce_integration')
   end
 end
