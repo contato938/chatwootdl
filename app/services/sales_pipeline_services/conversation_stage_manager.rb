@@ -60,6 +60,7 @@ module SalesPipelineServices
 
     def add_stage_label!(stage)
       return unless stage.present?
+      return if stage.label.blank?
 
       current_labels = conversation.labels.pluck(:name)
       return if current_labels.include?(stage.label.title)

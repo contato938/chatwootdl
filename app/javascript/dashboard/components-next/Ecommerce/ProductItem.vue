@@ -42,7 +42,9 @@ const sendProductLink = async () => {
       };
       // Ensure conversation id matches selected chat to trigger local render
       message.conversation_id = Number(message.conversation_id);
-      store.dispatch('conversations/addMessage', message);
+      await store.dispatch('conversations/addMessage', message);
+      // Fallback to refetch the conversation to keep state in sync if ActionCable is not active
+      await store.dispatch('conversations/getConversation', message.conversation_id);
     }
     emit('sent');
   } catch (error) {

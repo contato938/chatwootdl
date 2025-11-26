@@ -18,11 +18,20 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
       account: current_account
     )
 
-    stage = current_account.sales_pipeline_stages.find(stage_params[:stage_id])
+    stage = current_account.sales_pipeline_stages.includes(:label).find(stage_params[:stage_id])
+    if stage.label.blank?
+      return render json: { error: 'Stage label is missing. Please configure a label for this stage.' }, status: :unprocessable_entity
+    end
+
     stage_manager.update_stage!(stage)
 
     @current_stage = stage
     render json: stage_response(@current_stage)
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Stage not found' }, status: :not_found
+  rescue StandardError => e
+    Rails.logger.error("Sales stage update failed: #{e.message}")
+    render json: { error: 'Unable to update sales stage' }, status: :internal_server_error
   end
 
   def destroy
@@ -33,6 +42,9 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
 
     stage_manager.remove_stage!
     head :ok
+  rescue StandardError => e
+    Rails.logger.error("Sales stage remove failed: #{e.message}")
+    render json: { error: 'Unable to remove sales stage' }, status: :internal_server_error
   end
 
   private
