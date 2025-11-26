@@ -129,7 +129,7 @@ class Integrations::App
     account.feature_enabled?('notion_integration') && GlobalConfigService.load('NOTION_CLIENT_ID', nil).present?
   end
 
-  def woocommerce_enabled?(account)
-    account.feature_enabled?('woocommerce_integration')
+  def woocommerce_enabled?(_account)
+    true
   end
 end
