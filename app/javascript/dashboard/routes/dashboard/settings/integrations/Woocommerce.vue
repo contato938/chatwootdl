@@ -6,7 +6,6 @@ import { useAlert } from 'dashboard/composables';
 import Integration from './Integration.vue';
 import Spinner from 'shared/components/Spinner.vue';
 import Input from 'dashboard/components-next/input/Input.vue';
-import Checkbox from 'dashboard/components-next/checkbox/Checkbox.vue';
 import Button from 'dashboard/components-next/button/Button.vue';
 import WoocommerceAPI from 'dashboard/api/integrations/woocommerce';
 
@@ -18,9 +17,6 @@ const form = ref({
   storeUrl: '',
   consumerKey: '',
   consumerSecret: '',
-  verifySsl: true,
-  requestTimeout: '',
-  apiVersion: 'v3',
 });
 
 const isTesting = ref(false);
@@ -40,9 +36,6 @@ const buildPayload = () => ({
   store_url: form.value.storeUrl?.trim(),
   consumer_key: form.value.consumerKey,
   consumer_secret: form.value.consumerSecret,
-  verify_ssl: form.value.verifySsl,
-  request_timeout: form.value.requestTimeout || null,
-  api_version: form.value.apiVersion || 'v3',
 });
 
 const prefillForm = () => {
@@ -53,10 +46,6 @@ const prefillForm = () => {
     existingHook.value?.reference_id ||
     '';
   form.value.consumerKey = settings.consumer_key || '';
-  form.value.verifySsl =
-    settings.verify_ssl === undefined ? true : settings.verify_ssl;
-  form.value.requestTimeout = settings.request_timeout || '';
-  form.value.apiVersion = settings.api_version || 'v3';
   form.value.consumerSecret = '';
 };
 
@@ -207,30 +196,6 @@ onMounted(() => {
                 class="text-lg"
               />
             </button>
-          </div>
-          <Input
-            v-model="form.apiVersion"
-            :label="$t('WOOCOMMERCE.FORM.API_VERSION.LABEL')"
-            :message="$t('WOOCOMMERCE.FORM.API_VERSION.HELP')"
-            autocomplete="off"
-          />
-          <Input
-            v-model="form.requestTimeout"
-            :label="$t('WOOCOMMERCE.FORM.REQUEST_TIMEOUT.LABEL')"
-            :message="$t('WOOCOMMERCE.FORM.REQUEST_TIMEOUT.HELP')"
-            type="number"
-            min="0"
-          />
-          <div class="md:col-span-2 flex items-start gap-3">
-            <Checkbox v-model="form.verifySsl" />
-            <div>
-              <p class="text-sm font-medium text-n-slate-12">
-                {{ $t('WOOCOMMERCE.FORM.VERIFY_SSL.LABEL') }}
-              </p>
-              <p class="text-xs text-n-slate-11">
-                {{ $t('WOOCOMMERCE.FORM.VERIFY_SSL.HELP') }}
-              </p>
-            </div>
           </div>
           <div class="md:col-span-2 flex justify-end gap-2">
             <Button

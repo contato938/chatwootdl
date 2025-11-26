@@ -38,6 +38,14 @@
         "PLACEHOLDER": "cs_xxxxxxxxxxxxxxxx",
         "HELP": "Obtida junto com a Consumer Key nas configurações da API REST"
       },
+      "VERIFY_SSL": {
+        "LABEL": "Verificar SSL",
+        "HELP": "Desative apenas se sua loja usar certificado autoassinado"
+      },
+      "REQUEST_TIMEOUT": {
+        "LABEL": "Tempo limite da requisição (segundos)",
+        "HELP": "Opcional: ajuste o timeout da API do WooCommerce"
+      },
       "API_VERSION": {
         "LABEL": "Versão da API",
         "HELP": "Versão da API REST do WooCommerce (padrão: wc/v3)"
