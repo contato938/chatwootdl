@@ -199,7 +199,8 @@ export const mutations = {
       // Use splice to ensure reactivity when replacing an element
       chat.messages.splice(pendingMessageIndex, 1, message);
     } else {
-      chat.messages.push(message);
+      // Force reactivity by replacing the entire array
+      chat.messages = [...chat.messages, message];
       chat.timestamp = message.created_at;
       const { conversation: { unread_count: unreadCount = 0 } = {} } = message;
       chat.unread_count = unreadCount;
