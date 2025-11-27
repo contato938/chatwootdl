@@ -183,32 +183,43 @@ export const mutations = {
 
   [types.ADD_MESSAGE]({ allConversations, selectedChatId }, message) {
     const { conversation_id: conversationId } = message;
-    const [chat] = getSelectedChatConversation({
-      allConversations,
-      selectedChatId: conversationId,
-    });
-    if (!chat) return;
+    
+    const chatIndex = allConversations.findIndex(
+      c => Number(c.id) === Number(conversationId)
+    );
 
-    // Ensure messages array exists and is reactive
+    if (chatIndex === -1) return;
+
+    const chat = allConversations[chatIndex];
+
+    // Ensure messages array exists
     if (!chat.messages) {
       chat.messages = [];
     }
 
     const pendingMessageIndex = findPendingMessageIndex(chat, message);
+    
+    // Create a new object to ensure reactivity triggers
+    const updatedChat = { ...chat };
+
     if (pendingMessageIndex !== -1) {
       // Use splice to ensure reactivity when replacing an element
-      chat.messages.splice(pendingMessageIndex, 1, message);
+      updatedChat.messages.splice(pendingMessageIndex, 1, message);
     } else {
       // Force reactivity by replacing the entire array
-      chat.messages = [...chat.messages, message];
-      chat.timestamp = message.created_at;
+      updatedChat.messages = [...updatedChat.messages, message];
+      updatedChat.timestamp = message.created_at;
       const { conversation: { unread_count: unreadCount = 0 } = {} } = message;
-      chat.unread_count = unreadCount;
+      updatedChat.unread_count = unreadCount;
+      
       if (Number(selectedChatId) === Number(conversationId)) {
         emitter.emit(BUS_EVENTS.FETCH_LABEL_SUGGESTIONS);
         emitter.emit(BUS_EVENTS.SCROLL_TO_MESSAGE);
       }
     }
+
+    // Update the conversation in the list with the new object reference
+    allConversations.splice(chatIndex, 1, updatedChat);
   },
 
   [types.ADD_CONVERSATION](_state, conversation) {
