@@ -173,9 +173,9 @@ export default {
       return prevStages.reverse();
     },
   },
-  mounted() {
-    this.ensureStagesLoaded();
-    this.loadCurrentStage();
+  async mounted() {
+    await this.ensureStagesLoaded();
+    await this.loadCurrentStage();
   },
   methods: {
     async ensureStagesLoaded() {
@@ -190,20 +190,46 @@ export default {
       }
     },
 
+    parsedStageResponse(response) {
+      const rawStage = response?.data?.current_stage ?? response?.data;
+      return rawStage && Object.keys(rawStage).length ? rawStage : null;
+    },
+
+    async applyDefaultStageIfMissing() {
+      if (this.currentStage || !this.defaultStage) return;
+
+      try {
+        await this.$store.dispatch('salesPipeline/updateConversationStage', {
+          accountId: this.currentAccountId,
+          conversationId: this.conversationId,
+          stageId: this.defaultStage.id,
+        });
+        this.currentStage = this.defaultStage;
+        this.showStageSelector = false;
+      } catch (error) {
+        this.currentStage = null;
+      }
+    },
+
     async loadCurrentStage() {
       try {
         const response = await this.$store.dispatch('salesPipeline/fetchConversationStage', {
           accountId: this.currentAccountId,
           conversationId: this.conversationId,
         });
-        this.currentStage = response.data.current_stage;
+        const stageData = this.parsedStageResponse(response);
+        this.currentStage = stageData;
+
+        if (!stageData) {
+          await this.applyDefaultStageIfMissing();
+        }
       } catch (error) {
-        // Conversation might not have a stage, that's okay
-        this.currentStage = null;
+        await this.applyDefaultStageIfMissing();
       }
     },
 
-    async selectStage(stage) {
+    async selectStage(stage, { silent = false } = {}) {
+      if (!stage) return;
       if (this.isUpdating || this.currentStage?.id === stage.id) {
         this.showStageSelector = false;
         return;
@@ -220,11 +246,12 @@ export default {
         this.currentStage = stage;
         this.showStageSelector = false;
         
-        // Show success message
-        this.$root.$emit('newToastMessage', {
-          message: this.$t('CONVERSATION_SIDEBAR.STAGE_UPDATED', { stageName: stage.name }),
-          type: 'success',
-        });
+        if (!silent) {
+          this.$root.$emit('newToastMessage', {
+            message: this.$t('CONVERSATION_SIDEBAR.STAGE_UPDATED', { stageName: stage.name }),
+            type: 'success',
+          });
+        }
       } catch (error) {
         this.$root.$emit('newToastMessage', {
           message: this.$t('CONVERSATION_SIDEBAR.ERROR.UPDATE_FAILED'),
@@ -248,7 +275,8 @@ export default {
         this.currentStage = null;
         this.showStageSelector = false;
         
-        // Show success message
+        await this.applyDefaultStageIfMissing();
+
         this.$root.$emit('newToastMessage', {
           message: this.$t('CONVERSATION_SIDEBAR.STAGE_REMOVED'),
           type: 'success',

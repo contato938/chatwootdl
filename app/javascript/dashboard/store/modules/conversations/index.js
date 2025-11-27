@@ -73,7 +73,9 @@ export const mutations = {
 
   [types.SET_PREVIOUS_CONVERSATIONS](_state, { id, data }) {
     if (data.length) {
-      const [chat] = _state.allConversations.filter(c => c.id === id);
+      const [chat] = _state.allConversations.filter(
+        c => Number(c.id) === Number(id)
+      );
       chat.messages.unshift(...data);
     }
   },
@@ -81,7 +83,9 @@ export const mutations = {
     _state.attachments[id] = [...data];
   },
   [types.SET_MISSING_MESSAGES](_state, { id, data }) {
-    const [chat] = _state.allConversations.filter(c => c.id === id);
+    const [chat] = _state.allConversations.filter(
+        c => Number(c.id) === Number(id)
+      );
     if (!chat) return;
     chat.messages = data;
   },
@@ -185,6 +189,8 @@ export const mutations = {
     });
     if (!chat) return;
 
+    chat.messages = chat.messages || [];
+
     const pendingMessageIndex = findPendingMessageIndex(chat, message);
     if (pendingMessageIndex !== -1) {
       chat.messages[pendingMessageIndex] = message;
@@ -193,7 +199,7 @@ export const mutations = {
       chat.timestamp = message.created_at;
       const { conversation: { unread_count: unreadCount = 0 } = {} } = message;
       chat.unread_count = unreadCount;
-      if (selectedChatId === conversationId) {
+      if (Number(selectedChatId) === Number(conversationId)) {
         emitter.emit(BUS_EVENTS.FETCH_LABEL_SUGGESTIONS);
         emitter.emit(BUS_EVENTS.SCROLL_TO_MESSAGE);
       }
@@ -206,13 +212,15 @@ export const mutations = {
 
   [types.DELETE_CONVERSATION](_state, conversationId) {
     _state.allConversations = _state.allConversations.filter(
-      c => c.id !== conversationId
+      c => Number(c.id) !== Number(conversationId)
     );
   },
 
   [types.UPDATE_CONVERSATION](_state, conversation) {
     const { allConversations } = _state;
-    const index = allConversations.findIndex(c => c.id === conversation.id);
+    const index = allConversations.findIndex(
+      c => Number(c.id) === Number(conversation.id)
+    );
 
     if (index > -1) {
       const selectedConversation = allConversations[index];

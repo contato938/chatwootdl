@@ -8,7 +8,17 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
       conversation: @conversation,
       account: current_account
     )
+
     @current_stage = stage_manager.current_stage
+    if @current_stage.blank?
+      default_stage = current_account.sales_pipeline_stages.default_stage.first ||
+                      current_account.sales_pipeline_stages.first
+      if default_stage.present?
+        stage_manager.update_stage!(default_stage)
+        @current_stage = default_stage
+      end
+    end
+
     render json: @current_stage ? stage_response(@current_stage) : {}
   end
 

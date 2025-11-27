@@ -1,7 +1,7 @@
 class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::BaseController
   before_action :current_account
   before_action :fetch_sales_pipeline
-  before_action :check_authorization
+  before_action :authorize_sales_pipeline
 
   def show
     @stages = @sales_pipeline.sales_pipeline_stages.includes(:label)
@@ -74,5 +74,13 @@ class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::Base
 
   def per_stage_limit
     filter_params[:limit].present? ? filter_params[:limit].to_i : 50
+  end
+
+  def authorize_sales_pipeline
+    authorize(
+      @sales_pipeline || SalesPipeline.new(account: current_account),
+      :show?,
+      policy_class: SalesPipelineKanbanPolicy
+    )
   end
 end

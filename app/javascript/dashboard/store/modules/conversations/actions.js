@@ -87,12 +87,19 @@ const actions = {
         id: data.conversationId,
         data: meta,
       });
-      commit(types.SET_PREVIOUS_CONVERSATIONS, {
-        id: data.conversationId,
-        data: payload,
-      });
-      if (!payload.length) {
-        commit(types.SET_ALL_MESSAGES_LOADED);
+      if (data.before === null || typeof data.before === 'undefined') {
+        commit(types.SET_MISSING_MESSAGES, {
+          id: data.conversationId,
+          data: payload,
+        });
+      } else {
+        commit(types.SET_PREVIOUS_CONVERSATIONS, {
+          id: data.conversationId,
+          data: payload,
+        });
+        if (!payload.length) {
+          commit(types.SET_ALL_MESSAGES_LOADED);
+        }
       }
     } catch (error) {
       // Handle error
