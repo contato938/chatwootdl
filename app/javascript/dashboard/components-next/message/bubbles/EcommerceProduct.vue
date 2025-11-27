@@ -20,7 +20,9 @@ const normalizeStockStatus = value => {
 };
 
 const normalizedStockStatus = computed(() =>
-  normalizeStockStatus(product.value.stock_status)
+  normalizeStockStatus(
+    product.value.stock_status || product.value.stockStatus
+  )
 );
 
 const formatPrice = price => {
@@ -54,11 +56,11 @@ const providerLabel = computed(() => {
   <BaseBubble class="px-4 py-3" data-bubble-name="ecommerce-product">
     <div class="flex gap-3">
       <div
-        v-if="product.thumbnail_url"
+        v-if="product.thumbnail_url || product.thumbnailUrl"
         class="flex-shrink-0 w-16 h-16 bg-n-solid-3 rounded-md overflow-hidden"
       >
         <img
-          :src="product.thumbnail_url"
+          :src="product.thumbnail_url || product.thumbnailUrl"
           :alt="product.name"
           class="w-full h-full object-cover"
         />
@@ -100,8 +102,8 @@ const providerLabel = computed(() => {
             }}
           </span>
           <a
-            v-if="product.product_url"
-            :href="product.product_url"
+            v-if="product.product_url || product.productUrl"
+            :href="product.product_url || product.productUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="text-xs font-medium text-n-brand hover:underline flex items-center gap-1"
