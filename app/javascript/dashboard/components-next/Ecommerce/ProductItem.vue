@@ -32,7 +32,8 @@ const sendProductLink = async () => {
       // API already returns the message payload; normalize and append it to the store
       const message = {
         ...data,
-        conversation_id: Number(data.conversation_id || props.conversationId),
+        // Backend returns conversation.display_id; force the actual conversation id
+        conversation_id: Number(props.conversationId),
       };
 
       await store.dispatch('conversations/addMessage', message);

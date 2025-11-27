@@ -11,7 +11,7 @@
         <span class="text-slate-900 dark:text-slate-50 font-medium">{{ $t('SALES_PIPELINE.TITLE') }}</span>
       </div>
 
-      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-start md:gap-6">
         <div class="flex items-center gap-3">
           <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-50">
             {{ $t('SALES_PIPELINE.TITLE') }}
@@ -85,7 +85,7 @@
     </div>
 
     <!-- Kanban Board -->
-    <div class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden pb-2">
+    <div class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden pb-4 w-full">
       <div v-if="uiFlags.isFetching" class="flex items-center justify-center h-64">
         <spinner size="large" />
       </div>
@@ -112,7 +112,7 @@
         </router-link>
       </div>
 
-      <div v-else class="inline-flex h-full p-4 space-x-4 w-max min-w-full whitespace-nowrap">
+      <div v-else class="inline-flex h-full p-4 space-x-4 w-auto min-w-full whitespace-nowrap">
         <div
           v-for="stage in kanbanData"
           :key="stage.stage_id"
