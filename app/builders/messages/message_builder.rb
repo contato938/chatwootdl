@@ -112,7 +112,10 @@ class Messages::MessageBuilder
   end
 
   def automation_rule_id
-    @automation_rule.present? ? { content_attributes: { automation_rule_id: @automation_rule } } : {}
+    return {} unless @automation_rule.present?
+
+    existing_attrs = content_attributes || {}
+    { content_attributes: existing_attrs.merge(automation_rule_id: @automation_rule) }
   end
 
   def campaign_id
@@ -135,6 +138,7 @@ class Messages::MessageBuilder
       inbox_id: @conversation.inbox_id,
       message_type: message_type,
       content: @params[:content],
+      content_attributes: content_attributes,
       private: @private,
       sender: sender,
       content_type: @params[:content_type],
