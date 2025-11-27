@@ -59,23 +59,22 @@ const sendProductLink = async () => {
     );
 
     if (data) {
-      // The backend broadcasts the message via ActionCable automatically
-      // But we also add it manually to ensure instant UI update (optimistic-like)
       const conversationId = Number(props.conversationId);
       
-      const conversationExists =
-        store.getters.getConversationById?.(conversationId);
-      if (!conversationExists) {
-        await store.dispatch('conversations/getConversation', conversationId);
-      }
-
-      // Normalize message structure to match what store expects
+      // 1. Optimistic Update
       const message = {
         ...data,
         conversation_id: conversationId,
       };
-
       await store.dispatch('conversations/addMessage', message);
+
+      // 2. Force Fetch Messages (Nuclear Option)
+      // This ensures that even if ActionCable fails or optimistic update fails,
+      // we explicitly ask the backend for the latest messages.
+      await store.dispatch('conversations/fetchPreviousMessages', {
+        conversationId,
+        before: null, // Fetch latest
+      });
     }
     emit('sent');
   } catch (error) {
@@ -84,6 +83,14 @@ const sendProductLink = async () => {
   } finally {
     sending.value = false;
   }
+};
+
+const forceRefresh = async () => {
+  const conversationId = Number(props.conversationId);
+  await store.dispatch('conversations/fetchPreviousMessages', {
+    conversationId,
+    before: null,
+  });
 };
 
 const formatPrice = price => {
@@ -140,14 +147,24 @@ const formatPrice = price => {
         >
           {{ $t(stockLabel) }}
         </span>
-        <Button
-          :disabled="sending"
-          :loading="sending"
-          sm
-          @click="sendProductLink"
-        >
-          {{ $t('ECOMMERCE.PRODUCTS.SEND_LINK') }}
-        </Button>
+        <div class="flex gap-2">
+          <Button
+            v-if="normalizedStockStatus === 'in_stock'"
+            icon="arrow-rotate-right"
+            variant="ghost"
+            size="sm"
+            color="slate"
+            :title="$t('COMPONENTS.REFRESH')"
+            @click="forceRefresh"
+          />
+          <Button
+            v-if="normalizedStockStatus === 'in_stock'"
+            :label="$t('ECOMMERCE.PRODUCTS.SEND_LINK')"
+            size="sm"
+            :loading="sending"
+            @click="sendProductLink"
+          />
+        </div>
       </div>
     </div>
   </div>
