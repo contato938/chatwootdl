@@ -86,11 +86,21 @@ const sendProductLink = async () => {
 };
 
 const forceRefresh = async () => {
-  const conversationId = Number(props.conversationId);
-  await store.dispatch('conversations/fetchPreviousMessages', {
-    conversationId,
-    before: null,
-  });
+  try {
+    const conversationId = Number(props.conversationId);
+    console.log('Force refreshing conversation:', conversationId);
+    await store.dispatch('conversations/fetchPreviousMessages', {
+      conversationId,
+      before: null,
+    });
+    console.log('Force refresh successful');
+  } catch (error) {
+    console.error('Force refresh failed:', error);
+    // Fallback: Reload page if fetch fails (User requested "refresh na pagina inteira")
+    if (confirm('Refresh failed. Do you want to reload the page?')) {
+      window.location.reload();
+    }
+  }
 };
 
 const formatPrice = price => {
@@ -149,7 +159,6 @@ const formatPrice = price => {
         </span>
         <div class="flex gap-2">
           <Button
-            v-if="normalizedStockStatus === 'in_stock'"
             icon="arrow-rotate-right"
             variant="ghost"
             size="sm"
