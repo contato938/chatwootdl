@@ -211,15 +211,14 @@ Rails.application.routes.draw do
           end
           resources :labels, only: [:index, :show, :create, :update, :destroy]
           
-          # Sales Pipeline Routes
+          # Sales Pipeline Routes (collection endpoint defined before member routes)
+          get 'sales_pipelines/kanban', to: 'sales_pipeline_kanban#show', as: :sales_pipeline_kanban
           resources :sales_pipelines, only: [:index, :show, :create, :update, :destroy]
           resources :sales_pipeline_stages, only: [:index, :show, :create, :update, :destroy] do
             collection do
               put :reorder
             end
           end
-          # Kanban endpoint (collection-level) must be defined before generic sales_pipelines/:id route matching
-          get 'sales_pipelines/kanban', to: 'sales_pipeline_kanban#show', as: :sales_pipeline_kanban
 
           resources :conversations, only: [] do
             resource :sales_stage, only: [:show, :update, :destroy], controller: 'conversation_sales_stages'
