@@ -30,13 +30,26 @@ const sendProductLink = async () => {
 
     if (data) {
       // API already returns the message payload; normalize and append it to the store
+      const conversationId = Number(props.conversationId);
       const message = {
         ...data,
         // Backend returns conversation.display_id; force the actual conversation id
-        conversation_id: Number(props.conversationId),
+        conversation_id: conversationId,
       };
 
+      const conversationExists =
+        store.getters.getConversationById?.(conversationId);
+      if (!conversationExists) {
+        await store.dispatch('conversations/getConversation', conversationId);
+      }
+
       await store.dispatch('conversations/addMessage', message);
+
+      // Fallback: force-sync recent messages to guarantee UI shows the sent link
+      await store.dispatch('conversations/fetchPreviousMessages', {
+        conversationId,
+        before: null,
+      });
     }
     emit('sent');
   } catch (error) {
