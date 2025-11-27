@@ -54,6 +54,8 @@ class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::Base
 
   def build_conversation_card(conversation)
     last_message = conversation.messages.order(:created_at).last
+    last_activity = conversation.last_activity_at || conversation.updated_at || conversation.created_at
+    last_activity_ts = last_activity.present? ? last_activity.to_i : Time.current.to_i
 
     {
       conversation_id: conversation.id,
@@ -61,7 +63,7 @@ class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::Base
       inbox_name: conversation.inbox&.name,
       last_message_snippet: last_message&.content&.truncate(100),
       assignee_name: conversation.assignee&.available_name || 'Não atribuído',
-      last_activity_at: conversation.last_activity_at,
+      last_activity_at: last_activity_ts,
       status: conversation.status,
       priority: conversation.priority,
       custom_attributes: conversation.custom_attributes
