@@ -9,9 +9,25 @@ const { t } = useI18n();
 
 const product = computed(() => contentAttributes.value?.product || {});
 
+const normalizeStockStatus = value => {
+  if (value === true) return 'in_stock';
+  if (value === false) return 'out_of_stock';
+  if (!value) return 'unknown';
+  const normalized = value.toString().toLowerCase().replace(/[\s-]/g, '');
+  if (normalized === 'instock') return 'in_stock';
+  if (normalized === 'outofstock') return 'out_of_stock';
+  return value;
+};
+
+const normalizedStockStatus = computed(() =>
+  normalizeStockStatus(product.value.stock_status)
+);
+
 const formatPrice = price => {
   if (!price) return '';
-  const value = Number.parseFloat(price);
+  const value = Number.parseFloat(
+    price.toString().replace(/[^0-9.,-]/g, '').replace(',', '')
+  );
   if (Number.isNaN(value)) return price;
 
   return new Intl.NumberFormat('en', {
@@ -21,9 +37,9 @@ const formatPrice = price => {
 };
 
 const stockClass = computed(() => {
-  const status = product.value.stock_status;
+  const status = normalizedStockStatus.value;
   if (status === 'in_stock') return 'bg-n-jade-3 text-n-jade-11';
-  if (status) return 'bg-n-ruby-3 text-n-ruby-11';
+  if (status === 'out_of_stock') return 'bg-n-ruby-3 text-n-ruby-11';
   return 'bg-n-solid-3 text-n-slate-11';
 });
 
@@ -78,7 +94,7 @@ const providerLabel = computed(() => {
             :class="stockClass"
           >
             {{
-              product.stock_status === 'in_stock'
+              normalizedStockStatus.value === 'in_stock'
                 ? $t('ECOMMERCE.PRODUCTS.IN_STOCK')
                 : $t('ECOMMERCE.PRODUCTS.OUT_OF_STOCK')
             }}

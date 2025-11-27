@@ -20,6 +20,16 @@ const searchQuery = ref('');
 const searchTimeout = ref(null);
 const selectedFilter = ref('ALL');
 
+const normalizeStockStatus = value => {
+  if (value === true) return 'in_stock';
+  if (value === false) return 'out_of_stock';
+  if (!value) return 'unknown';
+  const normalized = value.toString().toLowerCase().replace(/[\s-]/g, '');
+  if (normalized === 'instock') return 'in_stock';
+  if (normalized === 'outofstock') return 'out_of_stock';
+  return value;
+};
+
 const stockFilters = [
   { value: 'ALL', label: 'ALL' },
   { value: 'IN_STOCK', label: 'IN_STOCK' },
@@ -51,10 +61,14 @@ const filteredProducts = computed(() => {
     return products.value;
   }
   if (selectedFilter.value === 'IN_STOCK') {
-    return products.value.filter(p => p.stock_status === 'in_stock');
+    return products.value.filter(
+      p => normalizeStockStatus(p.stock_status) === 'in_stock'
+    );
   }
   if (selectedFilter.value === 'OUT_OF_STOCK') {
-    return products.value.filter(p => p.stock_status !== 'in_stock');
+    return products.value.filter(
+      p => normalizeStockStatus(p.stock_status) !== 'in_stock'
+    );
   }
   return products.value;
 });

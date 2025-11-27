@@ -20,6 +20,36 @@ const emit = defineEmits(['sent']);
 const sending = ref(false);
 const store = useStore();
 
+const normalizeStockStatus = value => {
+  if (value === true) return 'in_stock';
+  if (value === false) return 'out_of_stock';
+  if (!value) return 'unknown';
+  const normalized = value.toString().toLowerCase().replace(/[\s-]/g, '');
+  if (normalized === 'instock') return 'in_stock';
+  if (normalized === 'outofstock') return 'out_of_stock';
+  return value;
+};
+
+const normalizedStockStatus = computed(() =>
+  normalizeStockStatus(props.product.stock_status)
+);
+
+const stockLabel = computed(() =>
+  normalizedStockStatus.value === 'in_stock'
+    ? 'ECOMMERCE.PRODUCTS.IN_STOCK'
+    : normalizedStockStatus.value === 'out_of_stock'
+      ? 'ECOMMERCE.PRODUCTS.OUT_OF_STOCK'
+      : 'ECOMMERCE.PRODUCTS.OUT_OF_STOCK'
+);
+
+const stockBadgeClass = computed(() =>
+  normalizedStockStatus.value === 'in_stock'
+    ? 'bg-n-jade-3 text-n-jade-11'
+    : normalizedStockStatus.value === 'out_of_stock'
+      ? 'bg-n-ruby-3 text-n-ruby-11'
+      : 'bg-n-solid-3 text-n-slate-11'
+);
+
 const sendProductLink = async () => {
   sending.value = true;
   try {
@@ -62,10 +92,18 @@ const sendProductLink = async () => {
 
 const formatPrice = price => {
   if (!price) return '-';
+  const numeric = Number(
+    price
+      .toString()
+      .replace(/[^0-9.,-]/g, '')
+      .replace(',', '')
+  );
+  if (Number.isNaN(numeric)) return price;
+
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(price);
+  }).format(numeric);
 };
 </script>
 
@@ -102,17 +140,9 @@ const formatPrice = price => {
       <div class="flex items-center justify-between gap-2">
         <span
           class="text-xs px-2 py-0.5 rounded-full"
-          :class="
-            product.stock_status === 'in_stock'
-              ? 'bg-n-jade-3 text-n-jade-11'
-              : 'bg-n-ruby-3 text-n-ruby-11'
-          "
+          :class="stockBadgeClass"
         >
-          {{
-            product.stock_status === 'in_stock'
-              ? $t('ECOMMERCE.PRODUCTS.IN_STOCK')
-              : $t('ECOMMERCE.PRODUCTS.OUT_OF_STOCK')
-          }}
+          {{ $t(stockLabel) }}
         </span>
         <Button
           :disabled="sending"
