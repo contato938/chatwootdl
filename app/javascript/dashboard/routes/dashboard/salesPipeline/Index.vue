@@ -202,8 +202,7 @@
             v-if="stage.cards.length === 0"
             class="text-center text-slate-400 dark:text-slate-500 text-sm py-8"
           >
-              {{ $t('SALES_PIPELINE.NO_CARDS_IN_STAGE') }}
-            </div>
+            {{ $t('SALES_PIPELINE.NO_CARDS_IN_STAGE') }}
           </div>
         </div>
       </div>
