@@ -156,6 +156,15 @@ export default {
       defaultStage: 'salesPipeline/getDefaultStage',
       currentAccountId: 'getCurrentAccountId',
     }),
+    conversationFromStore() {
+      const getter = this.$store.getters.getConversationById;
+      return getter ? getter(this.conversationId) || {} : {};
+    },
+    stageIdFromStore() {
+      const stageId =
+        this.conversationFromStore?.custom_attributes?.sales_stage_id;
+      return stageId ? Number(stageId) : null;
+    },
     settingsRoute() {
       return frontendURL(`accounts/${this.currentAccountId}/settings/sales-pipeline`);
     },
@@ -174,10 +183,38 @@ export default {
     },
   },
   async mounted() {
-    await this.ensureStagesLoaded();
-    await this.loadCurrentStage();
+    await this.initializeStage();
+  },
+  watch: {
+    conversationId() {
+      this.currentStage = null;
+      this.showStageSelector = false;
+      this.initializeStage();
+    },
+    async stageIdFromStore(newId, oldId) {
+      if (newId === oldId) return;
+      await this.ensureStagesLoaded();
+      if (newId) {
+        const stage = this.stages.find(s => s.id === newId);
+        if (stage) {
+          this.currentStage = stage;
+          this.showStageSelector = false;
+          return;
+        }
+        await this.loadCurrentStage();
+        return;
+      }
+
+      this.currentStage = null;
+      await this.applyDefaultStageIfMissing();
+    },
   },
   methods: {
+    async initializeStage() {
+      await this.ensureStagesLoaded();
+      await this.loadCurrentStage();
+    },
+
     async ensureStagesLoaded() {
       if (this.stages.length > 0) return;
 
