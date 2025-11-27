@@ -140,15 +140,11 @@ const refreshConversation = async () => {
           <button
             v-tooltip="$t('CONVERSATION.HEADER.REFRESH')"
             type="button"
-            class="flex-shrink-0 p-0.5 text-n-slate-11 hover:text-n-slate-12 hover:bg-n-alpha-2 rounded transition-colors"
+            class="flex-shrink-0 p-0.5 text-n-slate-11 hover:text-n-slate-12 hover:bg-n-alpha-2 rounded transition-colors text-base leading-none"
             :class="{ 'animate-spin': isRefreshing }"
             @click="refreshConversation"
           >
-            <fluent-icon
-              size="14"
-              class="my-0 mx-0 min-w-[14px]"
-              icon="arrow_sync"
-            />
+            ↻
           </button>
           <fluent-icon
             v-if="!isHMACVerified"
