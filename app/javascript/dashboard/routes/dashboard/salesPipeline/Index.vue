@@ -10,8 +10,8 @@
         <span class="mx-2">/</span>
         <span class="text-slate-900 dark:text-slate-50 font-medium">{{ $t('SALES_PIPELINE.TITLE') }}</span>
       </div>
-      
-      <div class="flex items-center justify-between">
+
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div class="flex items-center gap-3">
           <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-50">
             {{ $t('SALES_PIPELINE.TITLE') }}
@@ -24,10 +24,10 @@
             {{ $t('SALES_PIPELINE.CONFIGURE') }}
           </router-link>
         </div>
-        
+
         <!-- Filters -->
-        <div class="flex items-center space-x-3">
-          <div class="flex items-center space-x-2">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-2">
             <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
               {{ $t('SALES_PIPELINE.FILTER_BY_CHANNEL') }}
             </label>
@@ -49,7 +49,7 @@
             </select>
           </div>
 
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center gap-2">
             <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
               {{ $t('SALES_PIPELINE.FILTER_BY_AGENT') }}
             </label>
@@ -85,7 +85,7 @@
     </div>
 
     <!-- Kanban Board -->
-    <div class="flex-1 overflow-x-auto overflow-y-hidden">
+    <div class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden pb-2">
       <div v-if="uiFlags.isFetching" class="flex items-center justify-center h-64">
         <spinner size="large" />
       </div>

@@ -23,31 +23,19 @@ const store = useStore();
 const sendProductLink = async () => {
   sending.value = true;
   try {
-    const response = await EcommerceAPI.sendProduct(
+    const { data } = await EcommerceAPI.sendProduct(
       props.conversationId,
       props.product.id
     );
-    if (response.data) {
+
+    if (data) {
+      // API already returns the message payload; normalize and append it to the store
       const message = {
-        created_at: Math.floor(Date.now() / 1000),
-        message_type: 1,
-        content_type: 'integrations',
-        content_attributes: {
-          type: 'ecommerce_product',
-          product: props.product,
-        },
-        conversation_id: Number(props.conversationId),
-        status: 'sent',
-        ...response.data,
+        ...data,
+        conversation_id: Number(data.conversation_id || props.conversationId),
       };
-      // Ensure conversation id matches selected chat to trigger local render
-      message.conversation_id = Number(message.conversation_id);
+
       await store.dispatch('conversations/addMessage', message);
-      // Fallback: refetch latest page of messages to ensure UI sync after API latency
-      await store.dispatch('conversations/fetchPreviousMessages', {
-        conversationId: message.conversation_id,
-        before: null,
-      });
     }
     emit('sent');
   } catch (error) {
