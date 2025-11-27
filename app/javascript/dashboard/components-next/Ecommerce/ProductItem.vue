@@ -52,6 +52,7 @@ const stockBadgeClass = computed(() =>
 
 const sendProductLink = async () => {
   sending.value = true;
+  console.log('Sending product link...', { conversationId: props.conversationId, productId: props.product.id });
   try {
     const { data } = await EcommerceAPI.sendProduct(
       props.conversationId,
@@ -59,22 +60,35 @@ const sendProductLink = async () => {
     );
 
     if (data) {
+      console.log('Product sent successfully, received data:', data);
       const conversationId = Number(props.conversationId);
       
-      // 1. Optimistic Update
-      const message = {
-        ...data,
-        conversation_id: conversationId,
-      };
-      await store.dispatch('conversations/addMessage', message);
+      // 1. Optimistic Update (Try-Catch to not block fetch)
+      try {
+        console.log('Attempting optimistic update...');
+        const message = {
+          ...data,
+          conversation_id: conversationId,
+        };
+        await store.dispatch('conversations/addMessage', message);
+        console.log('Optimistic update successful');
+      } catch (e) {
+        console.error('Optimistic update failed:', e);
+      }
 
       // 2. Force Fetch Messages (Nuclear Option)
-      // This ensures that even if ActionCable fails or optimistic update fails,
-      // we explicitly ask the backend for the latest messages.
-      await store.dispatch('conversations/fetchPreviousMessages', {
-        conversationId,
-        before: null, // Fetch latest
-      });
+      try {
+        console.log('Attempting forced fetch (Nuclear Option)...');
+        await store.dispatch('conversations/fetchPreviousMessages', {
+          conversationId,
+          before: null, // Fetch latest
+        });
+        console.log('Forced fetch successful');
+      } catch (e) {
+        console.error('Forced fetch failed:', e);
+      }
+    } else {
+      console.warn('Product sent but no data received');
     }
     emit('sent');
   } catch (error) {
@@ -159,7 +173,7 @@ const formatPrice = price => {
         </span>
         <div class="flex gap-2">
           <Button
-            icon="arrow-rotate-right"
+            icon="i-lucide-refresh-ccw"
             variant="ghost"
             size="sm"
             color="slate"
