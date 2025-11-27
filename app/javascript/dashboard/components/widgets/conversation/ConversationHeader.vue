@@ -90,6 +90,21 @@ const hasMultipleInboxes = computed(
 );
 
 const hasSlaPolicyId = computed(() => props.chat?.sla_policy_id);
+
+const isRefreshing = ref(false);
+
+const refreshConversation = async () => {
+  if (isRefreshing.value) return;
+  
+  isRefreshing.value = true;
+  try {
+    // Simply reload the page as the most reliable refresh method
+    window.location.reload();
+  } catch (error) {
+    console.error('Failed to refresh conversation:', error);
+    isRefreshing.value = false;
+  }
+};
 </script>
 
 <template>
@@ -122,6 +137,19 @@ const hasSlaPolicyId = computed(() => props.chat?.sla_policy_id);
           >
             {{ currentContact.name }}
           </span>
+          <button
+            v-tooltip="$t('CONVERSATION.HEADER.REFRESH')"
+            type="button"
+            class="flex-shrink-0 p-0.5 text-n-slate-11 hover:text-n-slate-12 hover:bg-n-alpha-2 rounded transition-colors"
+            :class="{ 'animate-spin': isRefreshing }"
+            @click="refreshConversation"
+          >
+            <fluent-icon
+              size="14"
+              class="my-0 mx-0 min-w-[14px]"
+              icon="arrow_sync"
+            />
+          </button>
           <fluent-icon
             v-if="!isHMACVerified"
             v-tooltip="$t('CONVERSATION.UNVERIFIED_SESSION')"

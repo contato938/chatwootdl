@@ -63,29 +63,18 @@ const sendProductLink = async () => {
       console.log('Product sent successfully, received data:', data);
       const conversationId = Number(props.conversationId);
       
-      // 1. Optimistic Update (Try-Catch to not block fetch)
+      // Optimistic Update - Add message immediately to UI
       try {
-        console.log('Attempting optimistic update...');
+        console.log('Adding message to store (optimistic update)...');
         const message = {
           ...data,
           conversation_id: conversationId,
         };
         await store.dispatch('conversations/addMessage', message);
-        console.log('Optimistic update successful');
+        console.log('Message added to store successfully');
       } catch (e) {
-        console.error('Optimistic update failed:', e);
-      }
-
-      // 2. Force Fetch Messages (Nuclear Option)
-      try {
-        console.log('Attempting forced fetch (Nuclear Option)...');
-        await store.dispatch('conversations/fetchPreviousMessages', {
-          conversationId,
-          before: null, // Fetch latest
-        });
-        console.log('Forced fetch successful');
-      } catch (e) {
-        console.error('Forced fetch failed:', e);
+        console.error('Failed to add message to store:', e);
+        // ActionCable will still broadcast it, so user will see it eventually
       }
     } else {
       console.warn('Product sent but no data received');
@@ -96,24 +85,6 @@ const sendProductLink = async () => {
     emit('error');
   } finally {
     sending.value = false;
-  }
-};
-
-const forceRefresh = async () => {
-  try {
-    const conversationId = Number(props.conversationId);
-    console.log('Force refreshing conversation:', conversationId);
-    await store.dispatch('conversations/fetchPreviousMessages', {
-      conversationId,
-      before: null,
-    });
-    console.log('Force refresh successful');
-  } catch (error) {
-    console.error('Force refresh failed:', error);
-    // Fallback: Reload page if fetch fails (User requested "refresh na pagina inteira")
-    if (confirm('Refresh failed. Do you want to reload the page?')) {
-      window.location.reload();
-    }
   }
 };
 
@@ -171,23 +142,13 @@ const formatPrice = price => {
         >
           {{ $t(stockLabel) }}
         </span>
-        <div class="flex gap-2">
-          <Button
-            icon="i-lucide-refresh-ccw"
-            variant="ghost"
-            size="sm"
-            color="slate"
-            :title="$t('COMPONENTS.REFRESH')"
-            @click="forceRefresh"
-          />
-          <Button
-            v-if="normalizedStockStatus === 'in_stock'"
-            :label="$t('ECOMMERCE.PRODUCTS.SEND_LINK')"
-            size="sm"
-            :loading="sending"
-            @click="sendProductLink"
-          />
-        </div>
+        <Button
+          v-if="normalizedStockStatus === 'in_stock'"
+          :label="$t('ECOMMERCE.PRODUCTS.SEND_LINK')"
+          size="sm"
+          :loading="sending"
+          @click="sendProductLink"
+        />
       </div>
     </div>
   </div>
