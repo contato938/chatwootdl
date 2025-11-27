@@ -19,11 +19,10 @@ const normalizeStockStatus = value => {
   return value;
 };
 
-const normalizedStockStatus = computed(() =>
-  normalizeStockStatus(
-    product.value.stock_status || product.value.stockStatus
-  )
-);
+const normalizedStockStatus = computed(() => {
+  const status = product.value.stock_status || product.value.stockStatus;
+  return normalizeStockStatus(status);
+});
 
 const formatPrice = price => {
   if (!price) return '';
