@@ -140,13 +140,17 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY --from=node /usr/local/bin/node /usr/local/bin/
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-RUN if [ "$RAILS_ENV" != "production" ]; then \
-  apk add --no-cache curl \
+# Always provide npm/pnpm in the final image so assets can be built or debugged inside the container
+RUN apk add --no-cache curl \
   && ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
   && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
   && npm install -g pnpm@${PNPM_VERSION} \
-  && pnpm --version; \
-  fi
+  && pnpm --version \
+  && echo 'export PNPM_HOME="/root/.local/share/pnpm"' >> /root/.bashrc \
+  && echo 'export PATH="$PNPM_HOME:$PATH"' >> /root/.bashrc
+
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 COPY --from=pre-builder /gems/ /gems/
 COPY --from=pre-builder /app /app
