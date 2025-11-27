@@ -60,7 +60,10 @@ class Api::V1::Accounts::ConversationSalesStagesController < Api::V1::Accounts::
   private
 
   def fetch_conversation
-    @conversation = current_account.conversations.find(params[:conversation_id])
+    @conversation = current_account.conversations.find_by(display_id: params[:conversation_id]) ||
+                    current_account.conversations.find_by(id: params[:conversation_id])
+
+    raise ActiveRecord::RecordNotFound if @conversation.blank?
   end
 
   def stage_params

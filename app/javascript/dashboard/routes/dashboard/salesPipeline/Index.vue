@@ -112,7 +112,7 @@
         </router-link>
       </div>
 
-      <div v-else class="inline-flex h-full p-4 space-x-4 min-w-full">
+      <div v-else class="inline-flex h-full p-4 space-x-4 min-w-max">
         <div
           v-for="stage in kanbanData"
           :key="stage.stage_id"
@@ -156,46 +156,52 @@
           </div>
 
           <!-- Cards Container -->
-          <div class="p-3 space-y-2 min-h-[400px] max-h-[600px] overflow-y-auto">
-            <div
-              v-for="card in stage.cards"
-              :key="card.conversation_id"
-              class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
-              @click="openConversation(card.conversation_id)"
-            >
-              <div class="flex items-start justify-between mb-2">
-                <div class="flex items-center space-x-2">
-                  <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-                    <span class="text-xs font-medium text-slate-600 dark:text-slate-300">
-                      {{ card.contact_name.charAt(0).toUpperCase() }}
-                    </span>
-                  </div>
-                  <div>
-                    <div class="text-sm font-medium text-slate-900 dark:text-slate-50">
-                      {{ card.contact_name }}
+          <draggable
+            :list="stage.cards"
+            :group="{ name: 'kanban', pull: true, put: true }"
+            item-key="conversation_id"
+            class="p-3 space-y-2 min-h-[400px] max-h-[600px] overflow-y-auto"
+            @change="event => handleCardChange(stage, event)"
+          >
+            <template #item="{ element }">
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                @click="openConversation(element.conversation_id)"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                      <span class="text-xs font-medium text-slate-600 dark:text-slate-300">
+                        {{ element.contact_name.charAt(0).toUpperCase() }}
+                      </span>
                     </div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400">
-                      {{ card.inbox_name }}
+                    <div>
+                      <div class="text-sm font-medium text-slate-900 dark:text-slate-50">
+                        {{ element.contact_name }}
+                      </div>
+                      <div class="text-xs text-slate-500 dark:text-slate-400">
+                        {{ element.inbox_name }}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <!-- Status badge removido conforme solicitado -->
-              </div>
 
-              <div class="text-sm text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
-                {{ card.last_message_snippet || $t('SALES_PIPELINE.NO_MESSAGES') }}
-              </div>
+                <div class="text-sm text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
+                  {{ element.last_message_snippet || $t('SALES_PIPELINE.NO_MESSAGES') }}
+                </div>
 
-              <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <div>{{ card.assignee_name }}</div>
-                <div>{{ dynamicTime(card.last_activity_at) }}</div>
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <div>{{ element.assignee_name }}</div>
+                  <div>{{ dynamicTime(element.last_activity_at) }}</div>
+                </div>
               </div>
-            </div>
+            </template>
+          </draggable>
 
-            <div
-              v-if="stage.cards.length === 0"
-              class="text-center text-slate-400 dark:text-slate-500 text-sm py-8"
-            >
+          <div
+            v-if="stage.cards.length === 0"
+            class="text-center text-slate-400 dark:text-slate-500 text-sm py-8"
+          >
               {{ $t('SALES_PIPELINE.NO_CARDS_IN_STAGE') }}
             </div>
           </div>
@@ -289,6 +295,22 @@ export default {
 
     dynamicTime(time) {
       return dynamicTime(time);
+    },
+
+    async handleCardChange(stage, event) {
+      if (!event?.added?.element) return;
+      const card = event.added.element;
+      try {
+        await this.$store.dispatch('salesPipeline/updateConversationStage', {
+          accountId: this.currentAccountId,
+          conversationId: card.conversation_id,
+          stageId: stage.stage_id,
+        });
+        await this.loadKanbanData();
+      } catch (error) {
+        this.showErrorMessage(this.$t('SALES_PIPELINE.ERROR.KANBAN_LOAD_FAILED'));
+        await this.loadKanbanData();
+      }
     },
   },
 };
