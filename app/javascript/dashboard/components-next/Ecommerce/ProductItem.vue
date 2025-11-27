@@ -59,27 +59,18 @@ const sendProductLink = async () => {
     );
 
     if (data) {
-      // API already returns the message payload; normalize and append it to the store
+      // The backend broadcasts the message via ActionCable automatically
+      // We just need to ensure the conversation exists in the store
       const conversationId = Number(props.conversationId);
-      const message = {
-        ...data,
-        // Backend returns conversation.display_id; force the actual conversation id
-        conversation_id: conversationId,
-      };
-
+      
       const conversationExists =
         store.getters.getConversationById?.(conversationId);
       if (!conversationExists) {
         await store.dispatch('conversations/getConversation', conversationId);
       }
 
-      await store.dispatch('conversations/addMessage', message);
-
-      // Fallback: force-sync recent messages to guarantee UI shows the sent link
-      await store.dispatch('conversations/fetchPreviousMessages', {
-        conversationId,
-        before: null,
-      });
+      // The message will arrive via ActionCable broadcast (MESSAGE_CREATED event)
+      // No need to manually add it or fetch previous messages
     }
     emit('sent');
   } catch (error) {
