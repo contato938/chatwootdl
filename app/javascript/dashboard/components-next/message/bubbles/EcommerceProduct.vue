@@ -96,7 +96,7 @@ const providerLabel = computed(() => {
             :class="stockClass"
           >
             {{
-              normalizedStockStatus.value === 'in_stock'
+              normalizedStockStatus === 'in_stock'
                 ? $t('ECOMMERCE.PRODUCTS.IN_STOCK')
                 : $t('ECOMMERCE.PRODUCTS.OUT_OF_STOCK')
             }}

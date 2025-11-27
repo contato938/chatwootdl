@@ -60,7 +60,7 @@ const sendProductLink = async () => {
 
     if (data) {
       // The backend broadcasts the message via ActionCable automatically
-      // We just need to ensure the conversation exists in the store
+      // But we also add it manually to ensure instant UI update (optimistic-like)
       const conversationId = Number(props.conversationId);
       
       const conversationExists =
@@ -69,8 +69,13 @@ const sendProductLink = async () => {
         await store.dispatch('conversations/getConversation', conversationId);
       }
 
-      // The message will arrive via ActionCable broadcast (MESSAGE_CREATED event)
-      // No need to manually add it or fetch previous messages
+      // Normalize message structure to match what store expects
+      const message = {
+        ...data,
+        conversation_id: conversationId,
+      };
+
+      await store.dispatch('conversations/addMessage', message);
     }
     emit('sent');
   } catch (error) {
