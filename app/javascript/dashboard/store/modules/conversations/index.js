@@ -189,11 +189,15 @@ export const mutations = {
     });
     if (!chat) return;
 
-    chat.messages = chat.messages || [];
+    // Ensure messages array exists and is reactive
+    if (!chat.messages) {
+      chat.messages = [];
+    }
 
     const pendingMessageIndex = findPendingMessageIndex(chat, message);
     if (pendingMessageIndex !== -1) {
-      chat.messages[pendingMessageIndex] = message;
+      // Use splice to ensure reactivity when replacing an element
+      chat.messages.splice(pendingMessageIndex, 1, message);
     } else {
       chat.messages.push(message);
       chat.timestamp = message.created_at;
