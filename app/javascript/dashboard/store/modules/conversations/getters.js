@@ -12,7 +12,10 @@ export const getSelectedChatConversation = ({
   allConversations,
   selectedChatId,
 }) =>
-  allConversations.filter(conversation => conversation.id === selectedChatId);
+  allConversations.filter(
+    conversation =>
+      Number(conversation.id) === Number(selectedChatId)
+  );
 
 const getters = {
   getAllConversations: ({ allConversations, chatSortFilter: sortKey }) => {
