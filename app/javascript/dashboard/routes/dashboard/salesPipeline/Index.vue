@@ -85,7 +85,7 @@
     </div>
 
     <!-- Kanban Board -->
-    <div class="flex-1 overflow-x-auto">
+    <div class="flex-1 overflow-x-auto overflow-y-hidden">
       <div v-if="uiFlags.isFetching" class="flex items-center justify-center h-64">
         <spinner size="large" />
       </div>
@@ -112,7 +112,7 @@
         </router-link>
       </div>
 
-      <div v-else class="inline-flex h-full p-4 space-x-4 min-w-max">
+      <div v-else class="inline-flex h-full p-4 space-x-4 w-max min-w-full whitespace-nowrap">
         <div
           v-for="stage in kanbanData"
           :key="stage.stage_id"
