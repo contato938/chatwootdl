@@ -30,6 +30,8 @@ class Api::V1::Accounts::Integrations::EcommerceController < Api::V1::Accounts::
   def send_product
     provider = provider_for_integration(@integration)
     product = provider.get_product(params[:product_id])
+    Rails.logger.info "ECOMMERCE_DEBUG: Product ID: #{params[:product_id]}"
+    Rails.logger.info "ECOMMERCE_DEBUG: Product Data: #{product.inspect}"
 
     conversation = Current.account.conversations.find(params[:conversation_id])
     product_url = product[:product_url]
