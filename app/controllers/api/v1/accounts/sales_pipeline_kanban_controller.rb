@@ -58,7 +58,7 @@ class Api::V1::Accounts::SalesPipelineKanbanController < Api::V1::Accounts::Base
     last_activity_ts = last_activity.present? ? last_activity.to_i : Time.current.to_i
 
     {
-      conversation_id: conversation.id,
+      conversation_id: conversation.display_id,
       contact_name: conversation.contact&.name || 'Contato Sem Nome',
       inbox_name: conversation.inbox&.name,
       last_message_snippet: last_message&.content&.truncate(100),

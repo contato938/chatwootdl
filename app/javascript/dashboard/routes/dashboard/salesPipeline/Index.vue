@@ -112,7 +112,7 @@
         </router-link>
       </div>
 
-      <div v-else class="flex h-full p-4 space-x-4">
+      <div v-else class="inline-flex h-full p-4 space-x-4 min-w-full">
         <div
           v-for="stage in kanbanData"
           :key="stage.stage_id"
@@ -179,12 +179,7 @@
                     </div>
                   </div>
                 </div>
-                <span
-                  class="inline-flex items-center px-2 py-1 rounded text-xs font-medium"
-                  :class="getStatusClass(card.status)"
-                >
-                  {{ getStatusText(card.status) }}
-                </span>
+                <!-- Status badge removido conforme solicitado -->
               </div>
 
               <div class="text-sm text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
@@ -274,34 +269,15 @@ export default {
     },
 
     openConversation(conversationId) {
+      // Usa rota padrão de conversa direta pelo ID (display_id)
       const routeData = this.$router.resolve({
-        name: 'conversation_page',
+        name: 'inbox_conversation',
         params: {
           accountId: this.currentAccountId,
-          conversationId,
+          conversation_id: conversationId,
         },
       });
       window.open(routeData.href, '_blank');
-    },
-
-    getStatusClass(status) {
-      const statusClasses = {
-        open: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-        resolved: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-        pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-        snoozed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
-      };
-      return statusClasses[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    },
-
-    getStatusText(status) {
-      const statusTexts = {
-        open: this.$t('CONVERSATION.STATUS.OPEN'),
-        resolved: this.$t('CONVERSATION.STATUS.RESOLVED'),
-        pending: this.$t('CONVERSATION.STATUS.PENDING'),
-        snoozed: this.$t('CONVERSATION.STATUS.SNOOZED'),
-      };
-      return statusTexts[status] || status;
     },
 
     showErrorMessage(message) {
