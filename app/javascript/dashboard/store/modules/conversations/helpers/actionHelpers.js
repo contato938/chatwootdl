@@ -8,10 +8,13 @@ export const setPageFilter = ({ dispatch, filter, page, markEndReached }) => {
 };
 
 export const setContacts = (commit, chatList) => {
-  commit(
-    `contacts/${types.SET_CONTACTS}`,
-    chatList.map(chat => chat.meta.sender)
-  );
+  const contacts = chatList
+    .map(chat => chat.meta?.sender)
+    .filter(contact => contact);
+
+  if (!contacts.length) return;
+
+  commit(`contacts/${types.SET_CONTACTS}`, contacts);
 };
 
 export const isOnMentionsView = ({ route: { name: routeName } }) => {
