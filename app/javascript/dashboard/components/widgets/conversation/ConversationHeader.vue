@@ -35,7 +35,7 @@ const { isAWebWidgetInbox } = useInbox();
 const currentChat = computed(() => store.getters.getSelectedChat);
 const accountId = computed(() => store.getters.getCurrentAccountId);
 
-const chatMetadata = computed(() => props.chat.meta);
+const chatMetadata = computed(() => props.chat.meta || {});
 
 const backButtonUrl = computed(() => {
   const {
@@ -64,9 +64,19 @@ const isHMACVerified = computed(() => {
   return chatMetadata.value.hmac_verified;
 });
 
-const currentContact = computed(() =>
-  store.getters['contacts/getContact'](props.chat.meta.sender.id)
-);
+const currentContact = computed(() => {
+  const senderId = props.chat?.meta?.sender?.id;
+  if (!senderId) {
+    return { name: '', availability_status: null, thumbnail: '' };
+  }
+  return (
+    store.getters['contacts/getContact'](senderId) || {
+      name: '',
+      availability_status: null,
+      thumbnail: '',
+    }
+  );
+});
 
 const isSnoozed = computed(
   () => currentChat.value.status === wootConstants.STATUS_TYPE.SNOOZED
