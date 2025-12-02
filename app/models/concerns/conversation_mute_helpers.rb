@@ -13,6 +13,8 @@ module ConversationMuteHelpers
   end
 
   def muted?
+    return false if contact.nil?
+
     contact.blocked?
   end
 end
