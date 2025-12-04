@@ -16,7 +16,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_14_173609) do
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "vector"
+
+  pgvector_helper = defined?(Chatwoot::PostgresExtensionHelper) ? Chatwoot::PostgresExtensionHelper : nil
+  log_pgvector_warning = lambda do |message|
+    warning = [
+      "Extensão 'vector' indisponível; recursos de IA ficarão desativados.",
+      message
+    ].compact.join(' ')
+
+    if defined?(Rails) && Rails.logger
+      Rails.logger.warn(warning)
+    else
+      warn(warning)
+    end
+  end
+
+  begin
+    if pgvector_helper.nil? || pgvector_helper.pgvector_supported?
+      enable_extension "vector"
+    else
+      log_pgvector_warning.call(nil)
+    end
+  rescue ActiveRecord::StatementInvalid => e
+    log_pgvector_warning.call(e.message)
+  end
 
   create_table "access_tokens", force: :cascade do |t|
     t.string "owner_type"

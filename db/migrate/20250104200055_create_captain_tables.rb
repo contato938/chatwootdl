@@ -1,10 +1,10 @@
 class CreateCaptainTables < ActiveRecord::Migration[7.0]
   def up
-    # Post this migration, the 'vector' extension is mandatory to run the application.
-    # If the extension is not installed, the migration will raise an error.
-    setup_vector_extension
     create_assistants
     create_documents
+
+    return unless setup_vector_extension
+
     create_assistant_responses
     create_old_tables
   end
@@ -22,13 +22,17 @@ class CreateCaptainTables < ActiveRecord::Migration[7.0]
   private
 
   def setup_vector_extension
-    return if extension_enabled?('vector')
-
-    begin
-      enable_extension 'vector'
-    rescue ActiveRecord::StatementInvalid
-      raise StandardError, "Failed to enable 'vector' extension. Read more at https://chwt.app/v4/migration"
+    return true if extension_enabled?('vector')
+    unless vector_extension_available?
+      log_vector_extension_warning
+      return false
     end
+
+    enable_extension 'vector'
+    true
+  rescue ActiveRecord::StatementInvalid => e
+    log_vector_extension_warning(e.message)
+    false
   end
 
   def create_assistants
@@ -86,5 +90,27 @@ class CreateCaptainTables < ActiveRecord::Migration[7.0]
       t.timestamps
     end
     add_index :article_embeddings, :embedding, if_not_exists: true, using: :ivfflat, opclass: :vector_l2_ops
+  end
+
+  def vector_extension_available?
+    helper = defined?(Chatwoot::PostgresExtensionHelper) ? Chatwoot::PostgresExtensionHelper : nil
+    if helper
+      helper.pgvector_supported?(connection)
+    else
+      connection.extension_available?('vector')
+    end
+  rescue ActiveRecord::StatementInvalid
+    false
+  end
+
+  def log_vector_extension_warning(details = nil)
+    message = "Extensão 'vector' indisponível; pulando tabelas de embeddings."
+    message = "#{message} #{details}" if details
+
+    if defined?(Rails) && Rails.logger
+      Rails.logger.warn(message)
+    else
+      puts(message)
+    end
   end
 end
