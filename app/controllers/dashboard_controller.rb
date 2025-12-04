@@ -53,7 +53,19 @@ class DashboardController < ActionController::Base
   end
 
   def ensure_installation_onboarding
-    redirect_to '/installation/onboarding' if ::Redis::Alfred.get(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)
+    # Only show onboarding if flag is set AND no users exist
+    # This prevents showing wizard if users were created outside the wizard
+    onboarding_active = ::Redis::Alfred.get(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)
+    if onboarding_active && User.count.zero?
+      redirect_to '/installation/onboarding'
+    elsif !onboarding_active && User.count.zero?
+      # If no users exist but onboarding flag is not set, enable it
+      Redis::Alfred.set(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING, true)
+      redirect_to '/installation/onboarding'
+    elsif onboarding_active && User.count.positive?
+      # If users exist but onboarding flag is still active, disable it
+      Redis::Alfred.delete(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)
+    end
   end
 
   def render_hc_if_custom_domain
