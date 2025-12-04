@@ -31,14 +31,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_14_173609) do
     end
   end
 
+  vector_supported = false
+
   begin
     if pgvector_helper.nil? || pgvector_helper.pgvector_supported?
       enable_extension "vector"
+      vector_supported = true
     else
       log_pgvector_warning.call(nil)
     end
   rescue ActiveRecord::StatementInvalid => e
     log_pgvector_warning.call(e.message)
+    vector_supported = false
   end
 
   create_table "access_tokens", force: :cascade do |t|
@@ -180,13 +184,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_14_173609) do
     t.index ["sla_policy_id"], name: "index_applied_slas_on_sla_policy_id"
   end
 
-  create_table "article_embeddings", force: :cascade do |t|
-    t.bigint "article_id", null: false
-    t.text "term", null: false
-    t.vector "embedding", limit: 1536
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["embedding"], name: "index_article_embeddings_on_embedding", using: :ivfflat
+  if vector_supported
+    create_table "article_embeddings", force: :cascade do |t|
+      t.bigint "article_id", null: false
+      t.text "term", null: false
+      t.vector "embedding", limit: 1536
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index ["embedding"], name: "index_article_embeddings_on_embedding", using: :ivfflat
+    end
   end
 
   create_table "articles", force: :cascade do |t|
@@ -316,22 +322,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_14_173609) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "captain_assistant_responses", force: :cascade do |t|
-    t.string "question", null: false
-    t.text "answer", null: false
-    t.vector "embedding", limit: 1536
-    t.bigint "assistant_id", null: false
-    t.bigint "documentable_id"
-    t.bigint "account_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "status", default: 1, null: false
-    t.string "documentable_type"
-    t.index ["account_id"], name: "index_captain_assistant_responses_on_account_id"
-    t.index ["assistant_id"], name: "index_captain_assistant_responses_on_assistant_id"
-    t.index ["documentable_id", "documentable_type"], name: "idx_cap_asst_resp_on_documentable"
-    t.index ["embedding"], name: "vector_idx_knowledge_entries_embedding", using: :ivfflat
-    t.index ["status"], name: "index_captain_assistant_responses_on_status"
+  if vector_supported
+    create_table "captain_assistant_responses", force: :cascade do |t|
+      t.string "question", null: false
+      t.text "answer", null: false
+      t.vector "embedding", limit: 1536
+      t.bigint "assistant_id", null: false
+      t.bigint "documentable_id"
+      t.bigint "account_id", null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.integer "status", default: 1, null: false
+      t.string "documentable_type"
+      t.index ["account_id"], name: "index_captain_assistant_responses_on_account_id"
+      t.index ["assistant_id"], name: "index_captain_assistant_responses_on_assistant_id"
+      t.index ["documentable_id", "documentable_type"], name: "idx_cap_asst_resp_on_documentable"
+      t.index ["embedding"], name: "vector_idx_knowledge_entries_embedding", using: :ivfflat
+      t.index ["status"], name: "index_captain_assistant_responses_on_status"
+    end
   end
 
   create_table "captain_assistants", force: :cascade do |t|
